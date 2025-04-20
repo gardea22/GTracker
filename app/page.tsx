@@ -80,7 +80,7 @@ const Dashboard = () => {
                 <td style={tdStyle}>
                   {project.link && (
                     <a href={project.link} target="_blank" rel="noopener noreferrer">
-                      <div style={twitterIconStyle}></div> {/* Menampilkan ikon Twitter */}
+                      <div style={twitterIconStyle}>X</div> {/* Menampilkan ikon Twitter */}
                     </a>
                   )}
                 </td>
