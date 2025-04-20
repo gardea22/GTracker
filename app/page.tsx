@@ -56,14 +56,6 @@ const Dashboard = () => {
           {projectList.length === 0 ? (
             <tr>
               <td colSpan={6} style={{ ...tdStyle, textAlign: 'center' }}>
-                
-  {/* Tombol Add Project tetap muncul di bawah tabel */}
-        <div style={{ textAlign: 'center', marginTop: '20px' }}>
-          <button onClick={() => setShowModal(true)} style={buttonStyle}>
-            + Add Project
-          </button>
-        </div>
-                
               </td>
             </tr>
 
@@ -83,7 +75,13 @@ const Dashboard = () => {
         </tbody>
       </table>
 
-    
+     {/* Tombol Add Project tetap muncul di bawah tabel */}
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <button onClick={() => setShowModal(true)} style={buttonStyle}>
+            + Add Project
+          </button>
+        </div>
+                
       
       {/* Modal */}
       {showModal && (
