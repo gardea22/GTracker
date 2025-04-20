@@ -125,8 +125,6 @@ const tdStyle: React.CSSProperties = {
   color: '#ffffff',
 };
 
-};
-
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0, left: 0, right: 0, bottom: 0,
