@@ -7,8 +7,8 @@ type Project = {
   type: string;
   chain: string;
   status: string;
-  cost: string; // ubah dari number jadi string
-  link: string | ""; 
+  cost: number;
+  link: string | "";
 };
 
 const Dashboard = () => {
@@ -20,22 +20,14 @@ const Dashboard = () => {
     type: '',
     chain: '',
     status: '',
-    cost: '',
+    cost: 0,
     link: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    // Validasi jika cost tidak bisa diparse
-    const parsedCost = parseFloat(formData.cost);
-    if (isNaN(parsedCost)) {
-      alert('Please enter a valid cost.');
-      return;
-    }
-
-    setProjectList([...projectList, { ...formData, cost: parsedCost.toString() }]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: '', link: '' });
+    setProjectList([...projectList, formData]);
+    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '' });
     setShowModal(false);
   };
 
@@ -43,7 +35,7 @@ const Dashboard = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: name === 'cost' ? parseFloat(value) : value,
     }));
   };
 
@@ -87,12 +79,13 @@ const Dashboard = () => {
                 <td style={tdStyle}>${project.cost}</td>
                 <td style={tdStyle}>
                   {project.link && (
-                    <a 
-                      href={project.link} 
-                      target="_blank" 
-                      rel="noopener noreferrer" 
-                      style={{ display: 'inline-block' }}>
-                        <div style={twitterIconStyle}>X</div>
+                    <a
+                      href={project.link}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'inline-block' }}
+                    >
+                      <div style={twitterIconStyle}>X</div>
                     </a>
                   )}
                 </td>
@@ -108,13 +101,19 @@ const Dashboard = () => {
           <div style={modalStyle}>
             <h2 style={{ color: '#4A90E2', textAlign: 'center' }}>Add New Project</h2>
             <form onSubmit={handleSubmit}>
-              <input name="name" type="text" placeholder="Name Project" required style={inputStyle} value={formData.name} onChange={handleChange} />
-              <input name="type" type="text" placeholder="Type" required style={inputStyle} value={formData.type} onChange={handleChange} />
-              <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
-              <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
-              <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
-              <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} />
-              <div style={{ marginTop: '10px', textAlign: 'center' }}>
+              <div style={{ display: 'flex', gap: '12px' }}>
+                <div style={{ flex: 1 }}>
+                  <input name="name" type="text" placeholder="Name Project" required style={inputStyle} value={formData.name} onChange={handleChange} />
+                  <input name="type" type="text" placeholder="Type" required style={inputStyle} value={formData.type} onChange={handleChange} />
+                  <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
+                </div>
+                <div style={{ flex: 1 }}>
+                  <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
+                  <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
+                  <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} />
+                </div>
+              </div>
+              <div style={{ marginTop: '16px', textAlign: 'center' }}>
                 <button type="submit" style={submitStyle}>Simpan</button>
                 <button type="button" onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
               </div>
@@ -126,7 +125,7 @@ const Dashboard = () => {
   );
 };
 
-// Styles (tetap sama seperti sebelumnya)
+// Styles
 const thStyle: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: 'bold',
@@ -153,7 +152,6 @@ const overlayStyle: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   zIndex: 1000,
-  transition: 'opacity 0.3s ease-in-out',
 };
 
 const modalStyle: React.CSSProperties = {
@@ -161,7 +159,7 @@ const modalStyle: React.CSSProperties = {
   padding: '30px',
   borderRadius: '12px',
   width: '100%',
-  maxWidth: '420px',
+  maxWidth: '500px',
   color: 'white',
   boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
 };
@@ -188,7 +186,6 @@ const submitStyle: React.CSSProperties = {
   marginRight: '10px',
   cursor: 'pointer',
   fontWeight: 'bold',
-  transition: 'background 0.3s',
 };
 
 const cancelStyle: React.CSSProperties = {
@@ -199,7 +196,6 @@ const cancelStyle: React.CSSProperties = {
   borderRadius: '8px',
   cursor: 'pointer',
   fontWeight: 'bold',
-  transition: 'background 0.3s',
 };
 
 const circleButtonStyle: React.CSSProperties = {
