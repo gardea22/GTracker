@@ -2,7 +2,7 @@ import React from 'react';
 
 const Dashboard = () => {
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px' }}>
+    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#1e1e2f', minHeight: '100vh' }}>
       <h1 style={{ textAlign: 'left', color: '#4A90E2' }}>GTracker</h1>
 
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
@@ -31,18 +31,20 @@ const Dashboard = () => {
   );
 };
 
-// Inline style untuk th dan td agar lebih rapi
 const thStyle: React.CSSProperties = {
-  border: '1px solid #ccc',
+  border: '1px solid #333',
   padding: '10px',
   textAlign: 'left',
-  backgroundColor: '#f5f5f5',
+  backgroundColor: '#2c2c3c',
+  color: '#ffffff',
 };
 
 const tdStyle: React.CSSProperties = {
-  border: '1px solid #ccc',
+  border: '1px solid #333',
   padding: '10px',
   textAlign: 'left',
+  backgroundColor: '#1e1e2f',
+  color: '#ffffff',
 };
 
 export default Dashboard;
