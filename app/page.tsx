@@ -140,6 +140,13 @@ const tdStyle: React.CSSProperties = {
   color: '#ffffff',
 };
 
+const formStyle: React.CSSProperties = {
+  display: 'grid',
+  gridTemplateColumns: '1fr 1fr',
+  gap: '16px',
+};
+
+
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0, left: 0, right: 0, bottom: 0,
@@ -165,7 +172,6 @@ const modalStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 14px',
-  marginTop: '12px',
   borderRadius: '8px',
   border: 'none',
   backgroundColor: '#3b3b3b',
@@ -174,6 +180,7 @@ const inputStyle: React.CSSProperties = {
   outline: 'none',
   boxShadow: 'inset 0 0 0 1px #555',
 };
+
 
 const submitStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
