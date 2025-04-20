@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState } from 'react';
 
 const Dashboard = () => {
@@ -64,6 +66,7 @@ const Dashboard = () => {
   );
 };
 
+// Style constants
 const thStyle: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: 'bold',
