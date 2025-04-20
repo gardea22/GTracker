@@ -33,8 +33,8 @@ const Dashboard = () => {
 
 const thStyle: React.CSSProperties = {
   border: '1px solid #333',
-  padding: '10px',
-  textAlign: 'left',
+  padding: '30px',
+  textAlign: 'center',
   backgroundColor: '#2c2c3c',
   color: '#ffffff',
 };
