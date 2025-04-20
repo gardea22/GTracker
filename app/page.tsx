@@ -56,11 +56,10 @@ const Dashboard = () => {
           {projectList.length === 0 ? (
             <tr>
               <td colSpan={6} style={{ ...tdStyle, textAlign: 'center' }}>
-                <button onClick={() => setShowModal(true)} style={buttonStyle}>
-                  + Add Project
-                </button>
               </td>
             </tr>
+
+      
           ) : (
             projectList.map((project, index) => (
               <tr key={index}>
