@@ -8,7 +8,7 @@ type Project = {
   chain: string;
   status: string;
   cost: number;
-  link: string | null; // Menambahkan field link
+  link: string | ""; // Menambahkan field link
 };
 
 const Dashboard = () => {
@@ -21,7 +21,7 @@ const Dashboard = () => {
     chain: '',
     status: '',
     cost: 0,
-    link: '', // Menambahkan link pada formData
+    link: "", // Menambahkan link pada formData
   });
 
   const handleSubmit = (e: React.FormEvent) => {
