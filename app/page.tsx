@@ -182,5 +182,22 @@ const cancelStyle: React.CSSProperties = {
   cursor: 'pointer',
 };
 
+const circleButtonStyle: React.CSSProperties = {
+  backgroundColor: '#4A90E2',
+  color: 'white',
+  border: 'none',
+  width: '36px',
+  height: '36px',
+  borderRadius: '50%',
+  fontSize: '24px',
+  fontWeight: 'bold',
+  cursor: 'pointer',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+};
+
+
+
 export default Dashboard;
 
