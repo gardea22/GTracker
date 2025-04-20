@@ -8,6 +8,7 @@ type Project = {
   chain: string;
   status: string;
   cost: number;
+  link: string | null; // Menambahkan field link
 };
 
 const Dashboard = () => {
@@ -20,12 +21,13 @@ const Dashboard = () => {
     chain: '',
     status: '',
     cost: 0,
+    link: '', // Menambahkan link pada formData
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProjectList([...projectList, formData]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: 0 });
+    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '' });
     setShowModal(false);
   };
 
@@ -41,12 +43,12 @@ const Dashboard = () => {
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '10px', backgroundColor: '#1e1e2f', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ textAlign: 'center', color: '#4A90E2' }}>GTracker</h1>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
-          <button onClick={() => setShowModal(true)} style={circleButtonStyle}>
-              +
-          </button>
-        </div>
-      
+      <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+        <button onClick={() => setShowModal(true)} style={circleButtonStyle}>
+          +
+        </button>
+      </div>
+
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
         <thead>
           <tr>
@@ -56,16 +58,16 @@ const Dashboard = () => {
             <th style={thStyle}>Check</th>
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Cost</th>
+            <th style={thStyle}>Link</th> {/* Kolom Link baru */}
           </tr>
         </thead>
         <tbody>
           {projectList.length === 0 ? (
             <tr>
-              <td colSpan={6} style={{ ...tdStyle, textAlign: 'center' }}>
+              <td colSpan={7} style={{ ...tdStyle, textAlign: 'center' }}>
+                No projects available
               </td>
             </tr>
-
-      
           ) : (
             projectList.map((project, index) => (
               <tr key={index}>
@@ -75,12 +77,19 @@ const Dashboard = () => {
                 <td style={tdStyle}>✔️</td>
                 <td style={tdStyle}>{project.status}</td>
                 <td style={tdStyle}>${project.cost}</td>
+                <td style={tdStyle}>
+                  {project.link && (
+                    <a href={project.link} target="_blank" rel="noopener noreferrer">
+                      <div style={twitterIconStyle}></div> {/* Menampilkan ikon Twitter */}
+                    </a>
+                  )}
+                </td>
               </tr>
             ))
           )}
         </tbody>
       </table>
-      
+
       {/* Modal */}
       {showModal && (
         <div style={overlayStyle}>
@@ -92,6 +101,7 @@ const Dashboard = () => {
               <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
               <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
               <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
+              <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} /> {/* Input untuk link */}
               <div style={{ marginTop: '10px', textAlign: 'center' }}>
                 <button type="submit" style={submitStyle}>Simpan</button>
                 <button onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
@@ -185,7 +195,16 @@ const circleButtonStyle: React.CSSProperties = {
   justifyContent: 'center',
 };
 
-
+const twitterIconStyle: React.CSSProperties = {
+  width: '20px',
+  height: '20px',
+  borderRadius: '50%',
+  backgroundColor: '#1DA1F2', // Warna biru Twitter
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'white',
+  fontSize: '14px',
+};
 
 export default Dashboard;
-
