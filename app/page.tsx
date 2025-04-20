@@ -2,14 +2,48 @@
 
 import React, { useState } from 'react';
 
+type Project = {
+  name: string;
+  type: string;
+  chain: string;
+  status: string;
+  cost: number;
+};
+
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
+  const [projectList, setProjectList] = useState<Project[]>([
+    {
+      name: 'Example Project',
+      type: 'DApp',
+      chain: 'Ethereum',
+      status: 'Active',
+      cost: 200,
+    },
+  ]);
+
+  // Form state
+  const [formData, setFormData] = useState<Project>({
+    name: '',
+    type: '',
+    chain: '',
+    status: '',
+    cost: 0,
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Di sini kamu bisa ambil data form dan masukkan ke tabel
-    alert("Data submitted!");
+    setProjectList([...projectList, formData]);
+    setFormData({ name: '', type: '', chain: '', status: '', cost: 0 });
     setShowModal(false);
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "cost" ? parseFloat(value) : value,
+    }));
   };
 
   return (
@@ -32,14 +66,16 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <td style={tdStyle}>Example Project</td>
-            <td style={tdStyle}>DApp</td>
-            <td style={tdStyle}>Ethereum</td>
-            <td style={tdStyle}>✔️</td>
-            <td style={tdStyle}>Active</td>
-            <td style={tdStyle}>$200</td>
-          </tr>
+          {projectList.map((project, index) => (
+            <tr key={index}>
+              <td style={tdStyle}>{project.name}</td>
+              <td style={tdStyle}>{project.type}</td>
+              <td style={tdStyle}>{project.chain}</td>
+              <td style={tdStyle}>✔️</td>
+              <td style={tdStyle}>{project.status}</td>
+              <td style={tdStyle}>${project.cost}</td>
+            </tr>
+          ))}
         </tbody>
       </table>
 
@@ -49,11 +85,11 @@ const Dashboard = () => {
           <div style={modalStyle}>
             <h2 style={{ color: '#4A90E2' }}>Add New Project</h2>
             <form onSubmit={handleSubmit}>
-              <input type="text" placeholder="Name Project" required style={inputStyle} />
-              <input type="text" placeholder="Type" required style={inputStyle} />
-              <input type="text" placeholder="Chain" required style={inputStyle} />
-              <input type="text" placeholder="Status" required style={inputStyle} />
-              <input type="number" placeholder="Cost" required style={inputStyle} />
+              <input name="name" type="text" placeholder="Name Project" required style={inputStyle} value={formData.name} onChange={handleChange} />
+              <input name="type" type="text" placeholder="Type" required style={inputStyle} value={formData.type} onChange={handleChange} />
+              <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
+              <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
+              <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
               <div style={{ marginTop: '10px' }}>
                 <button type="submit" style={submitStyle}>Submit</button>
                 <button onClick={() => setShowModal(false)} style={cancelStyle}>Cancel</button>
@@ -66,7 +102,7 @@ const Dashboard = () => {
   );
 };
 
-// Style constants
+// Styles
 const thStyle: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: 'bold',
