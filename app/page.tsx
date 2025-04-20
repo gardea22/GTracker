@@ -7,8 +7,8 @@ type Project = {
   type: string;
   chain: string;
   status: string;
-  cost: number;
-  link: string | ""; // Menambahkan field link
+  cost: string; // ubah dari number jadi string
+  link: string | ""; 
 };
 
 const Dashboard = () => {
@@ -20,14 +20,22 @@ const Dashboard = () => {
     type: '',
     chain: '',
     status: '',
-    cost: 0,
-    link: "", // Menambahkan link pada formData
+    cost: '',
+    link: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setProjectList([...projectList, formData]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '' });
+
+    // Validasi jika cost tidak bisa diparse
+    const parsedCost = parseFloat(formData.cost);
+    if (isNaN(parsedCost)) {
+      alert('Please enter a valid cost.');
+      return;
+    }
+
+    setProjectList([...projectList, { ...formData, cost: parsedCost.toString() }]);
+    setFormData({ name: '', type: '', chain: '', status: '', cost: '', link: '' });
     setShowModal(false);
   };
 
@@ -35,7 +43,7 @@ const Dashboard = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === 'cost' ? parseFloat(value) : value,
+      [name]: value,
     }));
   };
 
@@ -58,7 +66,7 @@ const Dashboard = () => {
             <th style={thStyle}>Check</th>
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Cost</th>
-            <th style={thStyle}>Link</th> {/* Kolom Link baru */}
+            <th style={thStyle}>Link</th>
           </tr>
         </thead>
         <tbody>
@@ -77,20 +85,17 @@ const Dashboard = () => {
                 <td style={tdStyle}>✔️</td>
                 <td style={tdStyle}>{project.status}</td>
                 <td style={tdStyle}>${project.cost}</td>
-                
-               <td style={tdStyle}>
+                <td style={tdStyle}>
                   {project.link && (
-                  <a 
+                    <a 
                       href={project.link} 
                       target="_blank" 
                       rel="noopener noreferrer" 
-                      style={{ display: 'inline-block' }} // Tambahkan ini
-                      >
+                      style={{ display: 'inline-block' }}>
                         <div style={twitterIconStyle}>X</div>
-                  </a>
+                    </a>
                   )}
-              </td>
-
+                </td>
               </tr>
             ))
           )}
@@ -108,10 +113,10 @@ const Dashboard = () => {
               <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
               <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
               <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
-              <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} /> {/* Input untuk link */}
+              <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} />
               <div style={{ marginTop: '10px', textAlign: 'center' }}>
                 <button type="submit" style={submitStyle}>Simpan</button>
-                <button onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
+                <button type="button" onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
               </div>
             </form>
           </div>
@@ -121,7 +126,7 @@ const Dashboard = () => {
   );
 };
 
-// Styles
+// Styles (tetap sama seperti sebelumnya)
 const thStyle: React.CSSProperties = {
   fontSize: '15px',
   fontWeight: 'bold',
@@ -140,13 +145,6 @@ const tdStyle: React.CSSProperties = {
   color: '#ffffff',
 };
 
-const formStyle: React.CSSProperties = {
-  display: 'grid',
-  gridTemplateColumns: '1fr 1fr',
-  gap: '16px',
-};
-
-
 const overlayStyle: React.CSSProperties = {
   position: 'fixed',
   top: 0, left: 0, right: 0, bottom: 0,
@@ -157,7 +155,6 @@ const overlayStyle: React.CSSProperties = {
   zIndex: 1000,
   transition: 'opacity 0.3s ease-in-out',
 };
-
 
 const modalStyle: React.CSSProperties = {
   backgroundColor: '#2b2b2b',
@@ -172,6 +169,7 @@ const modalStyle: React.CSSProperties = {
 const inputStyle: React.CSSProperties = {
   width: '100%',
   padding: '10px 14px',
+  marginTop: '12px',
   borderRadius: '8px',
   border: 'none',
   backgroundColor: '#3b3b3b',
@@ -180,7 +178,6 @@ const inputStyle: React.CSSProperties = {
   outline: 'none',
   boxShadow: 'inset 0 0 0 1px #555',
 };
-
 
 const submitStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
@@ -205,7 +202,6 @@ const cancelStyle: React.CSSProperties = {
   transition: 'background 0.3s',
 };
 
-
 const circleButtonStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: 'white',
@@ -225,7 +221,7 @@ const twitterIconStyle: React.CSSProperties = {
   width: '20px',
   height: '20px',
   borderRadius: '50%',
-  backgroundColor: '#1DA1F2', // Warna biru Twitter
+  backgroundColor: '#1DA1F2',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
