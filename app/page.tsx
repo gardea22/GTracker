@@ -78,13 +78,18 @@ const Dashboard = () => {
                 <td style={tdStyle}>{project.status}</td>
                 <td style={tdStyle}>${project.cost}</td>
                 
-                <td style={tdStyle}>
-                    {project.link && (
-                    <a href={project.link} target="_blank" rel="noopener noreferrer">
-                        <div style={twitterIconStyle}>X</div> {/* Menampilkan ikon Twitter */}
-                    </a>
+               <td style={tdStyle}>
+                  {project.link && (
+                  <a 
+                      href={project.link} 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      style={{ display: 'inline-block' }} // Tambahkan ini
+                      >
+                        <div style={twitterIconStyle}>X</div>
+                  </a>
                   )}
-                </td>
+              </td>
 
               </tr>
             ))
