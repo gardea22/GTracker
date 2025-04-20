@@ -148,44 +148,56 @@ const overlayStyle: React.CSSProperties = {
   justifyContent: 'center',
   alignItems: 'center',
   zIndex: 1000,
+  transition: 'opacity 0.3s ease-in-out',
 };
 
+
 const modalStyle: React.CSSProperties = {
-  backgroundColor: '#2c2c3c',
-  padding: '20px',
-  borderRadius: '10%',
-  width: '500px',
+  backgroundColor: '#2b2b2b',
+  padding: '30px',
+  borderRadius: '12px',
+  width: '100%',
+  maxWidth: '420px',
   color: 'white',
+  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.6)',
 };
 
 const inputStyle: React.CSSProperties = {
   width: '100%',
-  padding: '8px',
-  marginTop: '10px',
-  borderRadius: '4px',
-  border: '1px solid #555',
-  backgroundColor: '#1e1e2f',
+  padding: '10px 14px',
+  marginTop: '12px',
+  borderRadius: '8px',
+  border: 'none',
+  backgroundColor: '#3b3b3b',
   color: 'white',
+  fontSize: '14px',
+  outline: 'none',
+  boxShadow: 'inset 0 0 0 1px #555',
 };
 
 const submitStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: 'white',
   border: 'none',
-  padding: '8px 16px',
-  borderRadius: '4px',
+  padding: '10px 20px',
+  borderRadius: '8px',
   marginRight: '10px',
   cursor: 'pointer',
+  fontWeight: 'bold',
+  transition: 'background 0.3s',
 };
 
 const cancelStyle: React.CSSProperties = {
-  backgroundColor: '#555',
+  backgroundColor: '#444',
   color: 'white',
   border: 'none',
-  padding: '8px 16px',
-  borderRadius: '4px',
+  padding: '10px 20px',
+  borderRadius: '8px',
   cursor: 'pointer',
+  fontWeight: 'bold',
+  transition: 'background 0.3s',
 };
+
 
 const circleButtonStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
