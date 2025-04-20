@@ -8,7 +8,7 @@ type Project = {
   chain: string;
   status: string;
   cost: number;
-  link: string | "";
+  twitter: string | "";
   website: string | "";
 };
 
@@ -22,14 +22,14 @@ const Dashboard = () => {
     chain: '',
     status: '',
     cost: 0,
-    link: '',
+    twitter: '',
     website: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProjectList([...projectList, formData]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '', website: '' });
+    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, twitter: '', website: '' });
     setShowModal(false);
   };
 
@@ -54,13 +54,13 @@ const Dashboard = () => {
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '10px' }}>
         <thead>
           <tr>
-            <th style={thStyle}>Name Project</th>
+            <th style={thStyle}>Project</th>
+            <th style={thStyle}>Check</th>
             <th style={thStyle}>Type</th>
             <th style={thStyle}>Chain</th>
-            <th style={thStyle}>Check</th>
             <th style={thStyle}>Status</th>
-            <th style={thStyle}>Cost</th>
             <th style={thStyle}>Link</th>
+            <th style={thStyle}>Cost</th>
           </tr>
         </thead>
         <tbody>
@@ -80,9 +80,9 @@ const Dashboard = () => {
                 <td style={tdStyle}>{project.status}</td>
                 <td style={tdStyle}>${project.cost}</td>
                 <td style={tdStyle}>
-                  {project.link && (
+                  {project.twitter && (
                     <a
-                      href={project.link}
+                      href={project.twitter}
                       target="_blank"
                       rel="noopener noreferrer"
                       style={{ display: 'inline-block' }}
@@ -115,20 +115,20 @@ const Dashboard = () => {
             <form onSubmit={handleSubmit}>
               <div style={{ display: 'flex', gap: '12px' }}>
                 <div style={{ flex: 1 }}>
-                  <input name="name" type="text" placeholder="Name Project" required style={inputStyle} value={formData.name} onChange={handleChange} />
+                  <input name="name" type="text" placeholder="Project Name" required style={inputStyle} value={formData.name} onChange={handleChange} />
                   <input name="type" type="text" placeholder="Type" required style={inputStyle} value={formData.type} onChange={handleChange} />
                   <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
                 </div>
                 <div style={{ flex: 1 }}>
                   <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
                   <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
-                  <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} />
-                  <input name="website" type="text" placeholder="Website Link" style={inputStyle} value={formData.website} onChange={handleChange} />
+                  <input name="link" type="text" placeholder="Twitter" style={inputStyle} value={formData.link} onChange={handleChange} />
+                  <input name="website" type="text" placeholder="Website" style={inputStyle} value={formData.website} onChange={handleChange} />
                 </div>
               </div>
               <div style={{ marginTop: '16px', textAlign: 'center' }}>
-                <button type="submit" style={submitStyle}>Simpan</button>
-                <button type="button" onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
+                <button type="submit" style={submitStyle}>Submit</button>
+                <button type="button" onClick={() => setShowModal(false)} style={cancelStyle}>Cancel</button>
               </div>
             </form>
           </div>
