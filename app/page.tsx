@@ -122,7 +122,7 @@ const Dashboard = () => {
                 <div style={{ flex: 1 }}>
                   <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
                   <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
-                  <input name="twitter" type="text" placeholder="Twitter" style={inputStyle} value={formData.link} onChange={handleChange} />
+                  <input name="twitter" type="text" placeholder="Twitter" style={inputStyle} value={formData.twitter} onChange={handleChange} />
                   <input name="website" type="text" placeholder="Website" style={inputStyle} value={formData.website} onChange={handleChange} />
                 </div>
               </div>
