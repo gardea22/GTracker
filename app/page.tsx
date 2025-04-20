@@ -125,14 +125,6 @@ const tdStyle: React.CSSProperties = {
   color: '#ffffff',
 };
 
-const buttonStyle: React.CSSProperties = {
-  backgroundColor: '#4A90E2',
-  color: '#fff',
-  border: 'none',
-  padding: '10px 20px',
-  borderRadius: '6px',
-  cursor: 'pointer',
-  fontWeight: 'bold',
 };
 
 const overlayStyle: React.CSSProperties = {
