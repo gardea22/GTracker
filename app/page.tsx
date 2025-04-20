@@ -32,6 +32,8 @@ const Dashboard = () => {
 };
 
 const thStyle: React.CSSProperties = {
+  fontSize: '20px',
+  fontWeight: 'bold',
   border: '1px solid #333',
   padding: '10px',
   textAlign: 'center',
