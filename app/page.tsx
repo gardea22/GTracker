@@ -2,8 +2,8 @@ import React from 'react';
 
 const Dashboard = () => {
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px' }}>
-      <h1 style={{ textAlign: 'left', color: '#4A90E2' }}>GTracker</h1>
+    <div className="font-sans p-5">
+      <h1 className="text-left text-blue-500 text-3xl font-bold">GTracker</h1>
     </div>
   );
 };
