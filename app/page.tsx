@@ -136,8 +136,8 @@ const overlayStyle: React.CSSProperties = {
 const modalStyle: React.CSSProperties = {
   backgroundColor: '#2c2c3c',
   padding: '20px',
-  borderRadius: '30%',
-  width: '300px',
+  borderRadius: '10%',
+  width: '500px',
   color: 'white',
 };
 
