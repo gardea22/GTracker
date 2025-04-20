@@ -77,13 +77,15 @@ const Dashboard = () => {
                 <td style={tdStyle}>✔️</td>
                 <td style={tdStyle}>{project.status}</td>
                 <td style={tdStyle}>${project.cost}</td>
+                
                 <td style={tdStyle}>
-                  {project.link && (
+                    {project.link && (
                     <a href={project.link} target="_blank" rel="noopener noreferrer">
-                      <div style={twitterIconStyle}>X</div> {/* Menampilkan ikon Twitter */}
+                        <div style={twitterIconStyle}>X</div> {/* Menampilkan ikon Twitter */}
                     </a>
                   )}
                 </td>
+
               </tr>
             ))
           )}
