@@ -76,6 +76,13 @@ const Dashboard = () => {
         </tbody>
       </table>
 
+      {/* Tombol Add Project tetap muncul di bawah tabel */}
+        <div style={{ textAlign: 'center', marginTop: '20px' }}>
+          <button onClick={() => setShowModal(true)} style={buttonStyle}>
+            + Add Project
+          </button>
+        </div>
+      
       {/* Modal */}
       {showModal && (
         <div style={overlayStyle}>
