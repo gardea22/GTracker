@@ -74,11 +74,10 @@ const Dashboard = () => {
             projectList.map((project, index) => (
               <tr key={index}>
                 <td style={tdStyle}>{project.name}</td>
+                <td style={tdStyle}>✔️</td>
                 <td style={tdStyle}>{project.type}</td>
                 <td style={tdStyle}>{project.chain}</td>
-                <td style={tdStyle}>✔️</td>
                 <td style={tdStyle}>{project.status}</td>
-                <td style={tdStyle}>${project.cost}</td>
                 <td style={tdStyle}>
                   {project.twitter && (
                     <a
@@ -101,6 +100,8 @@ const Dashboard = () => {
                     </a>
                   )}
                 </td>
+                <td style={tdStyle}>${project.cost}</td>
+                
               </tr>
             ))
           )}
