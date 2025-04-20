@@ -12,17 +12,8 @@ type Project = {
 
 const Dashboard = () => {
   const [showModal, setShowModal] = useState(false);
-  const [projectList, setProjectList] = useState<Project[]>([
-    {
-      name: 'Example Project',
-      type: 'DApp',
-      chain: 'Ethereum',
-      status: 'Active',
-      cost: 200,
-    },
-  ]);
+  const [projectList, setProjectList] = useState<Project[]>([]);
 
-  // Form state
   const [formData, setFormData] = useState<Project>({
     name: '',
     type: '',
@@ -42,17 +33,13 @@ const Dashboard = () => {
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "cost" ? parseFloat(value) : value,
+      [name]: name === 'cost' ? parseFloat(value) : value,
     }));
   };
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#1e1e2f', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ textAlign: 'left', color: '#4A90E2' }}>GTracker</h1>
-
-      <button onClick={() => setShowModal(true)} style={buttonStyle}>
-        + Add Project
-      </button>
 
       <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
         <thead>
@@ -66,16 +53,26 @@ const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {projectList.map((project, index) => (
-            <tr key={index}>
-              <td style={tdStyle}>{project.name}</td>
-              <td style={tdStyle}>{project.type}</td>
-              <td style={tdStyle}>{project.chain}</td>
-              <td style={tdStyle}>✔️</td>
-              <td style={tdStyle}>{project.status}</td>
-              <td style={tdStyle}>${project.cost}</td>
+          {projectList.length === 0 ? (
+            <tr>
+              <td colSpan={6} style={{ ...tdStyle, textAlign: 'center' }}>
+                <button onClick={() => setShowModal(true)} style={buttonStyle}>
+                  + Add Project
+                </button>
+              </td>
             </tr>
-          ))}
+          ) : (
+            projectList.map((project, index) => (
+              <tr key={index}>
+                <td style={tdStyle}>{project.name}</td>
+                <td style={tdStyle}>{project.type}</td>
+                <td style={tdStyle}>{project.chain}</td>
+                <td style={tdStyle}>✔️</td>
+                <td style={tdStyle}>{project.status}</td>
+                <td style={tdStyle}>${project.cost}</td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
 
@@ -83,16 +80,16 @@ const Dashboard = () => {
       {showModal && (
         <div style={overlayStyle}>
           <div style={modalStyle}>
-            <h2 style={{ color: '#4A90E2' }}>Add New Project</h2>
+            <h2 style={{ color: '#4A90E2', textAlign: 'center' }}>Add New Project</h2>
             <form onSubmit={handleSubmit}>
               <input name="name" type="text" placeholder="Name Project" required style={inputStyle} value={formData.name} onChange={handleChange} />
               <input name="type" type="text" placeholder="Type" required style={inputStyle} value={formData.type} onChange={handleChange} />
               <input name="chain" type="text" placeholder="Chain" required style={inputStyle} value={formData.chain} onChange={handleChange} />
               <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
               <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
-              <div style={{ marginTop: '10px' }}>
-                <button type="submit" style={submitStyle}>Submit</button>
-                <button onClick={() => setShowModal(false)} style={cancelStyle}>Cancel</button>
+              <div style={{ marginTop: '10px', textAlign: 'center' }}>
+                <button type="submit" style={submitStyle}>Simpan</button>
+                <button onClick={() => setShowModal(false)} style={cancelStyle}>Batal</button>
               </div>
             </form>
           </div>
@@ -125,7 +122,7 @@ const buttonStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: '#fff',
   border: 'none',
-  padding: '10px 16px',
+  padding: '10px 20px',
   borderRadius: '6px',
   cursor: 'pointer',
   fontWeight: 'bold',
@@ -163,7 +160,7 @@ const submitStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: 'white',
   border: 'none',
-  padding: '8px 12px',
+  padding: '8px 16px',
   borderRadius: '4px',
   marginRight: '10px',
   cursor: 'pointer',
@@ -173,9 +170,10 @@ const cancelStyle: React.CSSProperties = {
   backgroundColor: '#555',
   color: 'white',
   border: 'none',
-  padding: '8px 12px',
+  padding: '8px 16px',
   borderRadius: '4px',
   cursor: 'pointer',
 };
 
 export default Dashboard;
+
