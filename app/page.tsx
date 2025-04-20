@@ -9,6 +9,7 @@ type Project = {
   status: string;
   cost: number;
   link: string | "";
+  website: string | "";
 };
 
 const Dashboard = () => {
@@ -22,12 +23,13 @@ const Dashboard = () => {
     status: '',
     cost: 0,
     link: '',
+    website: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setProjectList([...projectList, formData]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '' });
+    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, link: '', website: '' });
     setShowModal(false);
   };
 
@@ -59,12 +61,13 @@ const Dashboard = () => {
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Cost</th>
             <th style={thStyle}>Link</th>
+            <th style={thStyle}>Website</th>
           </tr>
         </thead>
         <tbody>
           {projectList.length === 0 ? (
             <tr>
-              <td colSpan={7} style={{ ...tdStyle, textAlign: 'center' }}>
+              <td colSpan={8} style={{ ...tdStyle, textAlign: 'center' }}>
                 No projects available
               </td>
             </tr>
@@ -86,6 +89,18 @@ const Dashboard = () => {
                       style={{ display: 'inline-block' }}
                     >
                       <div style={twitterIconStyle}>X</div>
+                    </a>
+                  )}
+                </td>
+                <td style={tdStyle}>
+                  {project.website && (
+                    <a
+                      href={project.website}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      style={{ display: 'inline-block' }}
+                    >
+                      <div style={websiteIconStyle}>🌐</div>
                     </a>
                   )}
                 </td>
@@ -111,6 +126,7 @@ const Dashboard = () => {
                   <input name="status" type="text" placeholder="Status" required style={inputStyle} value={formData.status} onChange={handleChange} />
                   <input name="cost" type="number" placeholder="Cost" required style={inputStyle} value={formData.cost} onChange={handleChange} />
                   <input name="link" type="text" placeholder="Project Link" style={inputStyle} value={formData.link} onChange={handleChange} />
+                  <input name="website" type="text" placeholder="Website Link" style={inputStyle} value={formData.website} onChange={handleChange} />
                 </div>
               </div>
               <div style={{ marginTop: '16px', textAlign: 'center' }}>
@@ -218,6 +234,18 @@ const twitterIconStyle: React.CSSProperties = {
   height: '20px',
   borderRadius: '50%',
   backgroundColor: '#1DA1F2',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  color: 'white',
+  fontSize: '14px',
+};
+
+const websiteIconStyle: React.CSSProperties = {
+  width: '20px',
+  height: '20px',
+  borderRadius: '50%',
+  backgroundColor: '#00BFFF',
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
