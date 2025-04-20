@@ -41,7 +41,7 @@ const Dashboard = () => {
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#1e1e2f', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ textAlign: 'left', color: '#4A90E2' }}>GTracker</h1>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '10px' }}>
+        <div style={{ display: 'flex', justifyContent: 'flex-start', marginBottom: '5px' }}>
           <button onClick={() => setShowModal(true)} style={circleButtonStyle}>
               +
           </button>
@@ -174,10 +174,10 @@ const circleButtonStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: 'white',
   border: 'none',
-  width: '36px',
-  height: '36px',
+  width: '20px',
+  height: '20px',
   borderRadius: '50%',
-  fontSize: '24px',
+  fontSize: '10px',
   fontWeight: 'bold',
   cursor: 'pointer',
   display: 'flex',
