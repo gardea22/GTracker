@@ -173,10 +173,10 @@ const cancelStyle: React.CSSProperties = {
 const circleButtonStyle: React.CSSProperties = {
   backgroundColor: '#4A90E2',
   color: 'white',
-  border: 'none',
+  border: '5px',
   width: '20px',
   height: '20px',
-  borderRadius: '10%',
+  borderRadius: '50%',
   fontSize: '10px',
   fontWeight: 'bold',
   cursor: 'pointer',
