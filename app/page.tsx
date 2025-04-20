@@ -61,13 +61,12 @@ const Dashboard = () => {
             <th style={thStyle}>Status</th>
             <th style={thStyle}>Cost</th>
             <th style={thStyle}>Link</th>
-            <th style={thStyle}>Website</th>
           </tr>
         </thead>
         <tbody>
           {projectList.length === 0 ? (
             <tr>
-              <td colSpan={8} style={{ ...tdStyle, textAlign: 'center' }}>
+              <td colSpan={7} style={{ ...tdStyle, textAlign: 'center' }}>
                 No projects available
               </td>
             </tr>
@@ -91,14 +90,12 @@ const Dashboard = () => {
                       <div style={twitterIconStyle}>X</div>
                     </a>
                   )}
-                </td>
-                <td style={tdStyle}>
                   {project.website && (
                     <a
                       href={project.website}
                       target="_blank"
                       rel="noopener noreferrer"
-                      style={{ display: 'inline-block' }}
+                      style={{ display: 'inline-block', marginLeft: '8px' }}
                     >
                       <div style={websiteIconStyle}>🌐</div>
                     </a>
