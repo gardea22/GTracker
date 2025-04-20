@@ -118,7 +118,7 @@ const thStyle: React.CSSProperties = {
 const tdStyle: React.CSSProperties = {
   border: '1px solid #333',
   padding: '10px',
-  textAlign: 'left',
+  textAlign: 'center',
   backgroundColor: '#1e1e2f',
   color: '#ffffff',
 };
@@ -136,7 +136,7 @@ const overlayStyle: React.CSSProperties = {
 const modalStyle: React.CSSProperties = {
   backgroundColor: '#2c2c3c',
   padding: '20px',
-  borderRadius: '8px',
+  borderRadius: '30%',
   width: '300px',
   color: 'white',
 };
