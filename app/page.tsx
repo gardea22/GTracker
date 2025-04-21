@@ -74,13 +74,14 @@ const Dashboard = () => {
   };
 
   // Fungsi untuk menangani perubahan input form
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'cost' ? parseFloat(value) : value,
-    }));
-  };
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { name, value } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: value,
+  }));
+};
+
 
   // Fungsi untuk validasi URL
   const isValidUrl = (url: string) => {
