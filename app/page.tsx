@@ -41,6 +41,27 @@ const Dashboard = () => {
     }));
   };
 
+  
+const isValidUrl = (url: string) => {
+  return url === "" || /^https?:\/\/.+$/.test(url);
+};
+
+const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  if (!isValidUrl(formData.twitter) || !isValidUrl(formData.website)) {
+    alert("Twitter atau Website URL tidak valid (harus diawali http:// atau https://)");
+    return;
+  }
+
+  setProjectList([...projectList, formData]);
+  setFormData({ name: '', type: '', chain: '', status: '', cost: 0, twitter: '', website: '' });
+  setShowModal(false);
+};
+
+
+  
+
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: '10px', backgroundColor: '#1e1e2f', minHeight: '100vh', color: 'white' }}>
       <h1 style={{ textAlign: 'center', color: '#4A90E2' }}>GTracker</h1>
