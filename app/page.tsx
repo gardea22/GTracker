@@ -29,6 +29,14 @@ const Dashboard = () => {
     website: '',
   });
 
+  // State untuk filter
+  const [filter, setFilter] = useState<Partial<Project>>({
+    type: '',
+    chain: '',
+    status: '',
+    cost: undefined,
+  });
+
   // Fungsi untuk meng-handle submit form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault(); // Mencegah reload halaman saat submit
@@ -49,7 +57,7 @@ const Dashboard = () => {
     }
 
     // Menambahkan proyek ke daftar dan reset form
-setProjectList([...projectList, formData]);
+    setProjectList([...projectList, formData]);
     setFormData({
       name: '',
       type: '',
@@ -63,7 +71,6 @@ setProjectList([...projectList, formData]);
     setLoading(false); // Matikan loading setelah selesai
   };
 
-
   // Fungsi untuk menangani perubahan input form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target; // Mengambil nama dan nilai dari input
@@ -73,23 +80,94 @@ setProjectList([...projectList, formData]);
     }));
   };
 
+  // Fungsi untuk menghapus proyek
+  const handleDelete = (index: number) => {
+    const updatedProjects = projectList.filter((_, i) => i !== index);
+    setProjectList(updatedProjects);
+  };
+
+  // Fungsi untuk mengedit proyek
+  const handleEdit = (index: number) => {
+    const project = projectList[index];
+    setFormData(project);
+    setShowModal(true); // Menampilkan modal untuk mengedit proyek
+    handleDelete(index); // Menghapus proyek yang diedit dari daftar
+  };
+
   // Fungsi untuk validasi URL (harus diawali dengan http:// atau https://)
   const isValidUrl = (url: string) => {
     return url === "" || /^https?:\/\/.+$/.test(url);
   };
 
+  // Fungsi untuk filter proyek
+  const filteredProjects = projectList.filter(project => {
+    return (
+      (filter.type ? project.type === filter.type : true) &&
+      (filter.chain ? project.chain === filter.chain : true) &&
+      (filter.status ? project.status === filter.status : true) &&
+      (filter.cost !== undefined ? project.cost === filter.cost : true)
+    );
+  });
+
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
       <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
 
-      {/* Tombol untuk menambah proyek */}
-      <div className="flex justify-start mb-4">
+      {/* Tombol untuk menambah, mengedit, menghapus, dan filter proyek */}
+      <div className="flex justify-start mb-4 gap-2">
         <button
           onClick={() => setShowModal(true)} // Menampilkan modal saat tombol diklik
           className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
         >
           +
         </button>
+        <button
+          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+        >
+          ✏️
+        </button>
+        <button
+          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+        >
+          🗑️
+        </button>
+        <button
+          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+        >
+          🔍
+        </button>
+      </div>
+
+      {/* Filter untuk mencari proyek berdasarkan kriteria */}
+      <div className="flex gap-4 mb-4">
+        <input
+          type="text"
+          placeholder="Filter by Type"
+          className="p-2 rounded-md bg-[#3b3b3b] text-white"
+          value={filter.type || ""}
+          onChange={(e) => setFilter({ ...filter, type: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Filter by Chain"
+          className="p-2 rounded-md bg-[#3b3b3b] text-white"
+          value={filter.chain || ""}
+          onChange={(e) => setFilter({ ...filter, chain: e.target.value })}
+        />
+        <input
+          type="text"
+          placeholder="Filter by Status"
+          className="p-2 rounded-md bg-[#3b3b3b] text-white"
+          value={filter.status || ""}
+          onChange={(e) => setFilter({ ...filter, status: e.target.value })}
+        />
+        <input
+          type="number"
+          placeholder="Filter by Cost"
+          className="p-2 rounded-md bg-[#3b3b3b] text-white"
+          value={filter.cost || ""}
+          onChange={(e) => setFilter({ ...filter, cost: parseFloat(e.target.value) })}
+        />
       </div>
 
       {/* Tabel yang menampilkan daftar proyek */}
@@ -103,19 +181,20 @@ setProjectList([...projectList, formData]);
             <th className="border border-[#333] p-2 font-bold">Status</th>
             <th className="border border-[#333] p-2 font-bold">Link</th>
             <th className="border border-[#333] p-2 font-bold">Cost</th>
+            <th className="border border-[#333] p-2 font-bold">Actions</th>
           </tr>
         </thead>
         <tbody>
           {/* Jika tidak ada proyek */}
-          {projectList.length === 0 ? (
+          {filteredProjects.length === 0 ? (
             <tr>
-              <td colSpan={7} className="border border-[#333] p-2 text-center bg-[#1e1e2f]">
+              <td colSpan={8} className="border border-[#333] p-2 text-center bg-[#1e1e2f]">
                 No projects available
               </td>
             </tr>
           ) : (
             // Menampilkan daftar proyek yang sudah ditambahkan
-            projectList.map((project, index) => (
+            filteredProjects.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
                 <td className="border border-[#333] p-2 text-center">{project.name}</td>
                 <td className="border border-[#333] p-2 text-center">✔️</td>
@@ -136,6 +215,10 @@ setProjectList([...projectList, formData]);
                   )}
                 </td>
                 <td className="border border-[#333] p-2 text-center">${project.cost}</td>
+                <td className="border border-[#333] p-2 text-center">
+                  <button onClick={() => handleEdit(index)} className="bg-[#FF8C00] text-white px-2 py-1 rounded-md">Edit</button>
+                  <button onClick={() => handleDelete(index)} className="bg-[#FF0000] text-white px-2 py-1 rounded-md ml-2">Delete</button>
+                </td>
               </tr>
             ))
           )}
@@ -164,24 +247,23 @@ setProjectList([...projectList, formData]);
                   {/* Input untuk status proyek */}
                   <input name="status" type="text" placeholder="Status" required value={formData.status} onChange={handleChange}
                     className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk biaya proyek */}
+                  {/* Input untuk cost */}
                   <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange}
-                    min="0" className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk link Twitter */}
-                  <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleChange}
                     className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk link Website */}
-                  <input name="website" type="text" placeholder="Website" value={formData.website} onChange={handleChange}
+                  {/* Input untuk URL Twitter */}
+                  <input name="twitter" type="text" placeholder="Twitter Link" value={formData.twitter} onChange={handleChange}
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  {/* Input untuk URL Website */}
+                  <input name="website" type="text" placeholder="Website Link" value={formData.website} onChange={handleChange}
                     className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                 </div>
               </div>
-              <div className="mt-6 text-center">
-                {/* Tombol submit */}
-                <button type="submit" disabled={loading} className="bg-[#4A90E2] text-white font-bold px-5 py-2 rounded-md mr-2">
-                  {loading ? 'Submitting...' : 'Submit'}
+
+              <div className="mt-4 flex justify-center gap-4">
+                <button type="submit" className="bg-[#4A90E2] text-white px-6 py-3 rounded-md w-full max-w-sm font-semibold" disabled={loading}>
+                  {loading ? 'Saving...' : 'Save Project'}
                 </button>
-                {/* Tombol cancel */}
-                <button type="button" onClick={() => setShowModal(false)} className="bg-[#444] text-white font-bold px-5 py-2 rounded-md">
+                <button onClick={() => setShowModal(false)} className="bg-[#FF0000] text-white px-6 py-3 rounded-md w-full max-w-sm font-semibold">
                   Cancel
                 </button>
               </div>
