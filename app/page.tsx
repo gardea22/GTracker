@@ -124,12 +124,12 @@ const handleDelete = (index: number) => {
         <thead>
           <tr className="bg-[#2c2c3c] text-white">
             <th className="border border-[#333] p-2 font-bold w-[300px]">Project</th>
-            <th className="border border-[#333] p-2 font-bold">Check</th>
+            <th className="border border-[#333] p-2 font-bold w-[80px]">Check</th>
             <th className="border border-[#333] p-2 font-bold">Type</th>
             <th className="border border-[#333] p-2 font-bold">Chain</th>
             <th className="border border-[#333] p-2 font-bold">Status</th>
             <th className="border border-[#333] p-2 font-bold">Link</th>
-            <th className="border border-[#333] p-2 font-bold">Cost</th>
+            <th className="border border-[#333] p-2 font-bold w-[100px]">Cost</th>
             <th className="border border-[#333] p-2 font-bold">Actions</th>
           </tr>
         </thead>
