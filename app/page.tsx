@@ -94,11 +94,15 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
-  // Fungsi untuk menghapus proyek
-  const handleDelete = (index: number) => {
-    const updatedProjectList = projectList.filter((_, i) => i !== index);
-    setProjectList(updatedProjectList);
-  };
+// Fungsi untuk menghapus proyek (dengan konfirmasi)
+const handleDelete = (index: number) => {
+  const confirmed = window.confirm("Apakah kamu yakin ingin menghapus proyek ini?");
+  if (!confirmed) return;
+
+  const updatedProjectList = projectList.filter((_, i) => i !== index);
+  setProjectList(updatedProjectList);
+};
+
 
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
