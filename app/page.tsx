@@ -205,7 +205,7 @@ const handleDelete = (index: number) => {
                           onChange={(e) => setFormData((prev) => ({ ...prev, chain: e.target.value }))}
                           className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
                           >
-                          <option value="" disabled>Pilih Chain</option>
+                          <option value="" disabled>Chain</option>
                           <option value="Ethereum">Ethereum</option>
                           <option value="Solana">Solana</option>
                           <option value="BNB">BNB</option>
@@ -226,7 +226,7 @@ const handleDelete = (index: number) => {
                         required
                         className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
                         >
-                        <option value="">Select Status</option>
+                        <option value="" disabled>Status</option>
                         <option value="Waitlist">Waitlist</option>
                         <option value="Early Access">Early Access</option>
                         <option value="Active">Active</option>
