@@ -122,7 +122,7 @@ const handleDelete = (index: number) => {
       <table className="w-full border-collapse mt-2 text-sm">
         <thead>
           <tr className="bg-[#2c2c3c] text-white">
-            <th className="border border-[#333] p-2 font-bold w-[360px]">Project</th>
+            <th className="border border-[#333] p-2 font-bold w-[300px]">Project</th>
             <th className="border border-[#333] p-2 font-bold">Check</th>
             <th className="border border-[#333] p-2 font-bold">Type</th>
             <th className="border border-[#333] p-2 font-bold">Chain</th>
