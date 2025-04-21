@@ -1,7 +1,10 @@
+'use client';  // Menandakan bahwa file ini adalah komponen client
+
 import { useState } from "react";
 import Modal from "react-modal";
 import { FaEdit, FaTrash } from "react-icons/fa";
 
+// Komponen lainnya
 const Dashboard = () => {
   const [projectList, setProjectList] = useState([]);
   const [showModal, setShowModal] = useState(false);
