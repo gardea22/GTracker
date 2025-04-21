@@ -49,21 +49,19 @@ const Dashboard = () => {
     }
 
     // Menambahkan proyek ke daftar dan reset form
-    // Simulasi delay loading 1.2 detik
-setTimeout(() => {
-  setProjectList([...projectList, formData]);
-  setFormData({
-    name: '',
-    type: '',
-    chain: '',
-    status: '',
-    cost: 0,
-    twitter: '',
-    website: '',
-  });
-  setShowModal(false); // Menutup modal setelah submit
-  setLoading(false); // Matikan loading setelah selesai
-}, 1200); // 1200 ms = 1.2 detik
+setProjectList([...projectList, formData]);
+    setFormData({
+      name: '',
+      type: '',
+      chain: '',
+      status: '',
+      cost: 0,
+      twitter: '',
+      website: '',
+    });
+    setShowModal(false); // Menutup modal setelah submit
+    setLoading(false); // Matikan loading setelah selesai
+  };
 
 
   // Fungsi untuk menangani perubahan input form
