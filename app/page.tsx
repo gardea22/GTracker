@@ -187,7 +187,7 @@ const handleDelete = (index: number) => {
                           onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value }))}
                           className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
                           >
-                          <option value="" disabled>Pilih Type</option>
+                          <option value="" disabled>Type</option>
                           <option value="Testnet">Testnet</option>
                           <option value="DePin">DePin</option>
                           <option value="Point">Point</option>
