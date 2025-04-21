@@ -11,7 +11,6 @@ type Project = {
   cost: number;
   twitter: string | "";
   website: string | "";
-  checkedUntil?: number; // waktu dalam timestamp
 };
 
 const Dashboard = () => {
@@ -105,23 +104,7 @@ const handleDelete = (index: number) => {
   setProjectList(updatedProjectList);
 };
 
-const toggleCheck = (index: number) => {
-  const now = Date.now();
-  const updatedList = [...projectList];
 
-  const isCurrentlyChecked = updatedList[index].checkedUntil && updatedList[index].checkedUntil! > now;
-
-  if (isCurrentlyChecked) {
-    updatedList[index].checkedUntil = 0;
-  } else {
-    updatedList[index].checkedUntil = now + 24 * 60 * 60 * 1000; // 24 jam ke depan
-  }
-
-  setProjectList(updatedList);
-};
-
-
-  
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
       <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
@@ -161,22 +144,7 @@ const toggleCheck = (index: number) => {
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
                 <td className="border border-[#333] p-2 text-center">{project.name}</td>
-                <td className="border border-[#333] p-2 text-center">
-                <td className="border border-[#333] p-2 text-center">
-  <button
-    onClick={() => toggleCheck(index)}
-    className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
-    style={{
-      backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
-      color: 'white',
-    }}
-    title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
-  >
-    {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
-  </button>
-</td>
- 
-
+                <td className="border border-[#333] p-2 text-center">✔️</td>
                 <td className="border border-[#333] p-2 text-center">{project.type}</td>
                 <td className="border border-[#333] p-2 text-center">{project.chain}</td>
                 <td className="border border-[#333] p-2 text-center">{project.status}</td>
@@ -289,3 +257,5 @@ const toggleCheck = (index: number) => {
 };
 
 export default Dashboard;
+
+
