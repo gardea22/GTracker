@@ -217,7 +217,23 @@ const handleDelete = (index: number) => {
                   
                 </div>
                 <div className="flex-1">
-                  <input name="status" type="text" placeholder="Status" required value={formData.status} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+
+                  <select
+                        name="status"
+                        value={formData.status}
+                        onChange={handleChange}
+                        required
+                        className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                        >
+                        <option value="">Select Status</option>
+                        <option value="Waitlist">Waitlist</option>
+                        <option value="Early Access">Early Access</option>
+                        <option value="Active">Active</option>
+                        <option value="Snapshot">Snapshot</option>
+                        <option value="Claim">Claim</option>
+                        <option value="End">End</option>
+                </select>
+                  
                   <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange} min="0" className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                   <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                   <input name="website" type="text" placeholder="Website" value={formData.website} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
