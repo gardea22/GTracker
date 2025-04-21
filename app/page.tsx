@@ -1,267 +1,184 @@
-'use client';
-
-import React, { useState } from 'react';
-
-// Tipe data untuk Project
-type Project = {
-  name: string; // Nama project
-  type: string; // Jenis project
-  chain: string; // Blockchain yang digunakan
-  status: string; // Status proyek (misalnya: aktif, selesai, dll)
-  cost: number; // Biaya terkait proyek
-  twitter: string | ""; // Link Twitter, bisa kosong jika tidak ada
-  website: string | ""; // Link Website, bisa kosong jika tidak ada
-};
+import { useState } from "react";
+import Modal from "react-modal";
+import { FaEdit, FaTrash } from "react-icons/fa";
 
 const Dashboard = () => {
-  const [showModal, setShowModal] = useState(false); // Menyimpan status apakah modal ditampilkan
-  const [projectList, setProjectList] = useState<Project[]>([]); // Daftar proyek yang ditambahkan
-  const [loading, setLoading] = useState(false); // Menyimpan status apakah data sedang diproses
-
-  // State untuk menyimpan data inputan form
-  const [formData, setFormData] = useState<Project>({
-    name: '',
-    type: '',
-    chain: '',
-    status: '',
-    cost: 0,
-    twitter: '',
-    website: '',
+  const [projectList, setProjectList] = useState([]);
+  const [showModal, setShowModal] = useState(false);
+  const [formData, setFormData] = useState({
+    title: "",
+    description: "",
+    type: "",
+    chain: "",
+    status: "",
+    cost: "",
+    twitter: "",
+    website: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  // State untuk filter
-  const [filter, setFilter] = useState<Partial<Project>>({
-    type: '',
-    chain: '',
-    status: '',
-    cost: undefined,
-  });
-
-  // Fungsi untuk meng-handle submit form
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Mencegah reload halaman saat submit
-    setLoading(true); // Mengatur status loading menjadi true
-
-    // Validasi URL Twitter dan Website
-    if (!isValidUrl(formData.twitter) || !isValidUrl(formData.website)) {
-      alert("Twitter atau Website URL tidak valid (harus diawali http:// atau https://)");
-      setLoading(false); // Matikan loading jika URL tidak valid
-      return;
-    }
-
-    // Validasi agar Cost tidak kurang dari 0
-    if (formData.cost < 0) {
-      alert("Cost tidak boleh kurang dari 0.");
-      setLoading(false); // Matikan loading jika cost kurang dari 0
-      return;
-    }
-
-    // Menambahkan proyek ke daftar dan reset form
-    setProjectList([...projectList, formData]);
-    setFormData({
-      name: '',
-      type: '',
-      chain: '',
-      status: '',
-      cost: 0,
-      twitter: '',
-      website: '',
-    });
-    setShowModal(false); // Menutup modal setelah submit
-    setLoading(false); // Matikan loading setelah selesai
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Fungsi untuk menangani perubahan input form
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target; // Mengambil nama dan nilai dari input
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === 'cost' ? parseFloat(value) : value, // Jika input 'cost', konversi ke float
-    }));
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setLoading(true);
+
+    // Simulasi penambahan proyek ke daftar
+    setTimeout(() => {
+      setProjectList([...projectList, formData]);
+      setLoading(false);
+      setShowModal(false);
+      setFormData({
+        title: "",
+        description: "",
+        type: "",
+        chain: "",
+        status: "",
+        cost: "",
+        twitter: "",
+        website: "",
+      });
+    }, 1000);
   };
 
-  // Fungsi untuk menghapus proyek
-  const handleDelete = (index: number) => {
-    const updatedProjects = projectList.filter((_, i) => i !== index);
-    setProjectList(updatedProjects);
-  };
-
-  // Fungsi untuk mengedit proyek
-  const handleEdit = (index: number) => {
-    const project = projectList[index];
+  const handleEdit = (project) => {
     setFormData(project);
-    setShowModal(true); // Menampilkan modal untuk mengedit proyek
-    handleDelete(index); // Menghapus proyek yang diedit dari daftar
+    setShowModal(true);
   };
 
-  // Fungsi untuk validasi URL (harus diawali dengan http:// atau https://)
-  const isValidUrl = (url: string) => {
-    return url === "" || /^https?:\/\/.+$/.test(url);
+  const handleDelete = (index) => {
+    const updatedList = projectList.filter((_, i) => i !== index);
+    setProjectList(updatedList);
   };
-
-  // Fungsi untuk filter proyek
-  const filteredProjects = projectList.filter(project => {
-    return (
-      (filter.type ? project.type === filter.type : true) &&
-      (filter.chain ? project.chain === filter.chain : true) &&
-      (filter.status ? project.status === filter.status : true) &&
-      (filter.cost !== undefined ? project.cost === filter.cost : true)
-    );
-  });
 
   return (
-    <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
-      <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
-
-      {/* Tombol untuk menambah, mengedit, menghapus, dan filter proyek */}
-      <div className="flex justify-start mb-4 gap-2">
-        <button
-          onClick={() => setShowModal(true)} // Menampilkan modal saat tombol diklik
-          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
-        >
-          +
-        </button>
-        <button
-          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
-        >
-          ✏️
-        </button>
-        <button
-          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
-        >
-          🗑️
-        </button>
-        <button
-          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
-        >
-          🔍
-        </button>
-      </div>
-
-      {/* Filter untuk mencari proyek berdasarkan kriteria */}
-      <div className="flex gap-4 mb-4">
-        <input
-          type="text"
-          placeholder="Filter by Type"
-          className="p-2 rounded-md bg-[#3b3b3b] text-white"
-          value={filter.type || ""}
-          onChange={(e) => setFilter({ ...filter, type: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Filter by Chain"
-          className="p-2 rounded-md bg-[#3b3b3b] text-white"
-          value={filter.chain || ""}
-          onChange={(e) => setFilter({ ...filter, chain: e.target.value })}
-        />
-        <input
-          type="text"
-          placeholder="Filter by Status"
-          className="p-2 rounded-md bg-[#3b3b3b] text-white"
-          value={filter.status || ""}
-          onChange={(e) => setFilter({ ...filter, status: e.target.value })}
-        />
-        <input
-          type="number"
-          placeholder="Filter by Cost"
-          className="p-2 rounded-md bg-[#3b3b3b] text-white"
-          value={filter.cost || ""}
-          onChange={(e) => setFilter({ ...filter, cost: parseFloat(e.target.value) })}
-        />
-      </div>
-
-      {/* Tabel yang menampilkan daftar proyek */}
-      <table className="w-full border-collapse mt-2 text-sm">
-        <thead>
-          <tr className="bg-[#2c2c3c] text-white">
-            <th className="border border-[#333] p-2 font-bold">Project</th>
-            <th className="border border-[#333] p-2 font-bold">Check</th>
-            <th className="border border-[#333] p-2 font-bold">Type</th>
-            <th className="border border-[#333] p-2 font-bold">Chain</th>
-            <th className="border border-[#333] p-2 font-bold">Status</th>
-            <th className="border border-[#333] p-2 font-bold">Link</th>
-            <th className="border border-[#333] p-2 font-bold">Cost</th>
-            <th className="border border-[#333] p-2 font-bold">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {/* Jika tidak ada proyek */}
-          {filteredProjects.length === 0 ? (
-            <tr>
-              <td colSpan={8} className="border border-[#333] p-2 text-center bg-[#1e1e2f]">
-                No projects available
-              </td>
+    <div className="container mx-auto p-6">
+      <h1 className="text-2xl font-semibold text-center mb-4">Project Dashboard</h1>
+      
+      {/* Daftar proyek */}
+      <div className="overflow-x-auto">
+        <table className="min-w-full text-sm text-left">
+          <thead>
+            <tr className="bg-gray-800 text-white">
+              <th className="px-6 py-3">Title</th>
+              <th className="px-6 py-3">Description</th>
+              <th className="px-6 py-3">Type</th>
+              <th className="px-6 py-3">Status</th>
+              <th className="px-6 py-3">Cost</th>
+              <th className="px-6 py-3">Actions</th>
             </tr>
-          ) : (
-            // Menampilkan daftar proyek yang sudah ditambahkan
-            filteredProjects.map((project, index) => (
-              <tr key={index} className="bg-[#1e1e2f]">
-                <td className="border border-[#333] p-2 text-center">{project.name}</td>
-                <td className="border border-[#333] p-2 text-center">✔️</td>
-                <td className="border border-[#333] p-2 text-center">{project.type}</td>
-                <td className="border border-[#333] p-2 text-center">{project.chain}</td>
-                <td className="border border-[#333] p-2 text-center">{project.status}</td>
-                <td className="border border-[#333] p-2 text-center">
-                  {/* Menampilkan link Twitter dan Website jika ada */}
-                  {project.twitter && (
-                    <a href={project.twitter} target="_blank" rel="noopener noreferrer" className="inline-block">
-                      <div className="w-5 h-5 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm">X</div>
-                    </a>
-                  )}
-                  {project.website && (
-                    <a href={project.website} target="_blank" rel="noopener noreferrer" className="inline-block ml-2">
-                      <div className="w-5 h-5 rounded-full bg-[#00BFFF] flex items-center justify-center text-white text-sm">🌐</div>
-                    </a>
-                  )}
-                </td>
-                <td className="border border-[#333] p-2 text-center">${project.cost}</td>
-                <td className="border border-[#333] p-2 text-center">
-                  <button onClick={() => handleEdit(index)} className="bg-[#FF8C00] text-white px-2 py-1 rounded-md">Edit</button>
-                  <button onClick={() => handleDelete(index)} className="bg-[#FF0000] text-white px-2 py-1 rounded-md ml-2">Delete</button>
+          </thead>
+          <tbody>
+            {projectList.map((project, index) => (
+              <tr key={index} className="bg-gray-700 text-white">
+                <td className="px-6 py-3">{project.title}</td>
+                <td className="px-6 py-3">{project.description}</td>
+                <td className="px-6 py-3">{project.type}</td>
+                <td className="px-6 py-3">{project.status}</td>
+                <td className="px-6 py-3">{project.cost}</td>
+                <td className="px-6 py-3">
+                  <button onClick={() => handleEdit(project)} className="text-blue-500 mx-2">
+                    <FaEdit />
+                  </button>
+                  <button onClick={() => handleDelete(index)} className="text-red-500 mx-2">
+                    <FaTrash />
+                  </button>
                 </td>
               </tr>
-            ))
-          )}
-        </tbody>
-      </table>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
-      {/* Modal untuk menambah proyek baru */}
+      {/* Button untuk membuka modal */}
+      <button
+        onClick={() => setShowModal(true)}
+        className="mt-6 bg-[#4A90E2] text-white px-6 py-3 rounded-md w-full max-w-sm font-semibold"
+      >
+        Add Project
+      </button>
+
+      {/* Modal untuk menambahkan atau mengedit proyek */}
       {showModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-          <div className="bg-[#2b2b2b] p-8 rounded-xl w-full max-w-lg text-white shadow-lg">
-            <h2 className="text-[#4A90E2] text-xl font-semibold text-center mb-4">Add New Project</h2>
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+          <div className="bg-[#2D2D2D] p-6 rounded-md w-96">
+            <h2 className="text-white text-xl mb-4">{formData.title ? "Edit Project" : "Add Project"}</h2>
             <form onSubmit={handleSubmit}>
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  {/* Input untuk nama proyek */}
-                  <input name="name" type="text" placeholder="Project Name" required value={formData.name} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk jenis proyek */}
-                  <input name="type" type="text" placeholder="Type" required value={formData.type} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk chain (blockchain) */}
-                  <input name="chain" type="text" placeholder="Chain" required value={formData.chain} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                </div>
-                <div className="flex-1">
-                  {/* Input untuk status proyek */}
-                  <input name="status" type="text" placeholder="Status" required value={formData.status} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk cost */}
-                  <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk URL Twitter */}
-                  <input name="twitter" type="text" placeholder="Twitter Link" value={formData.twitter} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  {/* Input untuk URL Website */}
-                  <input name="website" type="text" placeholder="Website Link" value={formData.website} onChange={handleChange}
-                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                </div>
-              </div>
+              <input
+                name="title"
+                type="text"
+                placeholder="Title"
+                required
+                value={formData.title}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <textarea
+                name="description"
+                placeholder="Description"
+                required
+                value={formData.description}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              ></textarea>
+              <input
+                name="type"
+                type="text"
+                placeholder="Type"
+                required
+                value={formData.type}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <input
+                name="chain"
+                type="text"
+                placeholder="Chain"
+                required
+                value={formData.chain}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <input
+                name="status"
+                type="text"
+                placeholder="Status"
+                required
+                value={formData.status}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <input
+                name="cost"
+                type="number"
+                placeholder="Cost"
+                required
+                value={formData.cost}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <input
+                name="twitter"
+                type="text"
+                placeholder="Twitter Link"
+                value={formData.twitter}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
+              <input
+                name="website"
+                type="text"
+                placeholder="Website Link"
+                value={formData.website}
+                onChange={handleChange}
+                className="w-full p-3 mb-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+              />
 
               <div className="mt-4 flex justify-center gap-4">
                 <button type="submit" className="bg-[#4A90E2] text-white px-6 py-3 rounded-md w-full max-w-sm font-semibold" disabled={loading}>
-                  {loading ? 'Saving...' : 'Save Project'}
+                  {loading ? "Saving..." : "Save Project"}
                 </button>
                 <button onClick={() => setShowModal(false)} className="bg-[#FF0000] text-white px-6 py-3 rounded-md w-full max-w-sm font-semibold">
                   Cancel
