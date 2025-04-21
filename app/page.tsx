@@ -179,6 +179,8 @@ const handleDelete = (index: number) => {
             <form onSubmit={handleSubmit}>
               <div className="flex gap-4">
                 <div className="flex-1">
+
+                  
                   <input name="name" type="text" placeholder="Project Name" required value={formData.name} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                   <select
                           name="type"
@@ -195,7 +197,24 @@ const handleDelete = (index: number) => {
                           <option value="Wallet">Wallet</option>
                   </select>
 
-                  <input name="chain" type="text" placeholder="Chain" required value={formData.chain} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <select
+                          name="chain"
+                          required
+                          value={formData.chain}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, chain: e.target.value }))}
+                          className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                          >
+                          <option value="" disabled>Pilih Chain</option>
+                          <option value="Ethereum">Ethereum</option>
+                          <option value="Solana">Solana</option>
+                          <option value="BNB">BNB</option>
+                          <option value="Base">Base</option>
+                          <option value="Polygon">Polygon</option>
+                          <option value="OP">OP</option>
+                          <option value="Other">Other</option>
+                  </select>
+
+                  
                 </div>
                 <div className="flex-1">
                   <input name="status" type="text" placeholder="Status" required value={formData.status} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
