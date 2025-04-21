@@ -180,7 +180,21 @@ const handleDelete = (index: number) => {
               <div className="flex gap-4">
                 <div className="flex-1">
                   <input name="name" type="text" placeholder="Project Name" required value={formData.name} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  <input name="type" type="text" placeholder="Type" required value={formData.type} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <select
+                          name="type"
+                          required
+                          value={formData.type}
+                          onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value }))}
+                          className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                          >
+                          <option value="" disabled>Pilih Type</option>
+                          <option value="Testnet">Testnet</option>
+                          <option value="DePin">DePin</option>
+                          <option value="Point">Point</option>
+                          <option value="MiniApp">MiniApp</option>
+                          <option value="Wallet">Wallet</option>
+                  </select>
+
                   <input name="chain" type="text" placeholder="Chain" required value={formData.chain} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                 </div>
                 <div className="flex-1">
