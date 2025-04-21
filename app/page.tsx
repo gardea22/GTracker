@@ -1,20 +1,24 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
+// Tipe data untuk Project
 type Project = {
   name: string;
   type: string;
   chain: string;
   status: string;
   cost: number;
-  twitter: string;
-  website: string;
-  checkedAt?: number; // waktu terakhir dicheck
+  twitter: string | "";
+  website: string | "";
 };
 
-export default function GTracker() {
+const Dashboard = () => {
+  const [showModal, setShowModal] = useState(false);
   const [projectList, setProjectList] = useState<Project[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(null);
+
   const [formData, setFormData] = useState<Project>({
     name: '',
     type: '',
@@ -23,39 +27,51 @@ export default function GTracker() {
     cost: 0,
     twitter: '',
     website: '',
-    checkedAt: 0, // default X
   });
 
-  // Cek apakah masih dalam 24 jam setelah dicek
-  const isChecked = (checkedAt?: number) => {
-    if (!checkedAt) return false;
-    const now = Date.now();
-    return now - checkedAt < 24 * 60 * 60 * 1000;
+  // Fungsi validasi URL
+  const isValidUrl = (url: string) => {
+    return url === "" || /^https?:\/\/.+$/.test(url);
   };
 
-  // Toggle check
-  const toggleCheck = (index: number) => {
-    const updatedProjectList = [...projectList];
-    const project = updatedProjectList[index];
-    if (isChecked(project.checkedAt)) {
-      project.checkedAt = 0;
-    } else {
-      project.checkedAt = Date.now();
-    }
-    setProjectList(updatedProjectList);
+  // Fungsi pengecekan validitas lengkap
+  const isProjectValid = (project: Project) => {
+    return (
+      project.name.trim() !== '' &&
+      project.type.trim() !== '' &&
+      project.chain.trim() !== '' &&
+      project.status.trim() !== '' &&
+      project.cost >= 0 &&
+      isValidUrl(project.twitter) &&
+      isValidUrl(project.website)
+    );
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: name === 'cost' ? parseInt(value) : value,
-    }));
-  };
-
+  // Fungsi handle submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setProjectList((prevList) => [...prevList, formData]);
+    setLoading(true);
+
+    if (!isValidUrl(formData.twitter) || !isValidUrl(formData.website)) {
+      alert("Twitter atau Website URL tidak valid (harus diawali http:// atau https://)");
+      setLoading(false);
+      return;
+    }
+
+    if (formData.cost < 0) {
+      alert("Cost tidak boleh kurang dari 0.");
+      setLoading(false);
+      return;
+    }
+
+    if (editingProjectIndex !== null) {
+      const updatedProjectList = [...projectList];
+      updatedProjectList[editingProjectIndex] = formData;
+      setProjectList(updatedProjectList);
+    } else {
+      setProjectList([...projectList, formData]);
+    }
+
     setFormData({
       name: '',
       type: '',
@@ -64,127 +80,161 @@ export default function GTracker() {
       cost: 0,
       twitter: '',
       website: '',
-      checkedAt: 0, // reset
     });
+
+    setShowModal(false);
+    setEditingProjectIndex(null);
+    setLoading(false);
+  };
+
+  // Fungsi untuk perubahan form input
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === 'cost' ? Number(value) : value,
+    }));
+  };
+
+  const handleEdit = (index: number) => {
+    setEditingProjectIndex(index);
+    setFormData(projectList[index]);
+    setShowModal(true);
+  };
+
+  const handleDelete = (index: number) => {
+    const confirmed = window.confirm("Apakah kamu yakin ingin menghapus proyek ini?");
+    if (!confirmed) return;
+
+    const updatedProjectList = projectList.filter((_, i) => i !== index);
+    setProjectList(updatedProjectList);
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto">
-      <h1 className="text-2xl font-bold mb-4">GTracker</h1>
+    <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
+      <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
 
-      <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4 mb-6">
-        <input
-          type="text"
-          name="name"
-          placeholder="Project Name"
-          value={formData.name}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="type"
-          placeholder="Type"
-          value={formData.type}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="chain"
-          placeholder="Chain"
-          value={formData.chain}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="status"
-          placeholder="Status"
-          value={formData.status}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="number"
-          name="cost"
-          placeholder="Cost"
-          value={formData.cost}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="twitter"
-          placeholder="Twitter"
-          value={formData.twitter}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <input
-          type="text"
-          name="website"
-          placeholder="Website"
-          value={formData.website}
-          onChange={handleChange}
-          className="p-2 border rounded"
-        />
-        <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded col-span-2">
-          Add Project
+      <div className="flex justify-start mb-4">
+        <button
+          onClick={() => setShowModal(true)}
+          className="bg-[#4A90E2] text-white w-6 h-6 rounded-full text-xs font-bold flex items-center justify-center"
+        >
+          +
         </button>
-      </form>
+      </div>
 
-      <div className="overflow-x-auto">
-        <table className="w-full border-collapse border border-[#333] text-sm">
-          <thead>
-            <tr className="bg-[#111] text-white">
-              <th className="border border-[#333] p-2">No</th>
-              <th className="border border-[#333] p-2">Name</th>
-              <th className="border border-[#333] p-2">Type</th>
-              <th className="border border-[#333] p-2">Chain</th>
-              <th className="border border-[#333] p-2">Status</th>
-              <th className="border border-[#333] p-2">Cost</th>
-              <th className="border border-[#333] p-2">Twitter</th>
-              <th className="border border-[#333] p-2">Website</th>
-              <th className="border border-[#333] p-2">Check</th>
+      <table className="w-full border-collapse mt-2 text-sm">
+        <thead>
+          <tr className="bg-[#2c2c3c] text-white">
+            <th className="border border-[#333] p-2 font-bold w-[300px]">Project</th>
+            <th className="border border-[#333] p-2 font-bold w-[80px]">Check</th>
+            <th className="border border-[#333] p-2 font-bold">Type</th>
+            <th className="border border-[#333] p-2 font-bold">Chain</th>
+            <th className="border border-[#333] p-2 font-bold">Status</th>
+            <th className="border border-[#333] p-2 font-bold">Link</th>
+            <th className="border border-[#333] p-2 font-bold w-[100px]">Cost</th>
+            <th className="border border-[#333] p-2 font-bold">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {projectList.length === 0 ? (
+            <tr>
+              <td colSpan={8} className="border border-[#333] p-2 text-center bg-[#1e1e2f]">
+                No projects available
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {projectList.map((project, index) => (
-              <tr key={index} className="text-center">
-                <td className="border border-[#333] p-2">{index + 1}</td>
-                <td className="border border-[#333] p-2">{project.name}</td>
-                <td className="border border-[#333] p-2">{project.type}</td>
-                <td className="border border-[#333] p-2">{project.chain}</td>
-                <td className="border border-[#333] p-2">{project.status}</td>
-                <td className="border border-[#333] p-2">${project.cost}</td>
-                <td className="border border-[#333] p-2">
-                  <a href={project.twitter} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-                    Twitter
-                  </a>
-                </td>
-                <td className="border border-[#333] p-2">
-                  <a href={project.website} target="_blank" rel="noopener noreferrer" className="text-blue-500">
-                    Website
-                  </a>
-                </td>
+          ) : (
+            projectList.map((project, index) => (
+              <tr key={index} className="bg-[#1e1e2f]">
+                <td className="border border-[#333] p-2 text-center">{project.name}</td>
                 <td className="border border-[#333] p-2 text-center">
-                  <button
-                    onClick={() => toggleCheck(index)}
-                    className={`w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 ${
-                      isChecked(project.checkedAt)
-                        ? 'bg-green-500 text-white'
-                        : 'bg-red-500 text-white'
-                    }`}
-                  >
-                    {isChecked(project.checkedAt) ? '✓' : 'X'}
-                  </button>
+                  {isProjectValid(project) ? '✔️' : '❌'}
+                </td>
+                <td className="border border-[#333] p-2 text-center">{project.type}</td>
+                <td className="border border-[#333] p-2 text-center">{project.chain}</td>
+                <td className="border border-[#333] p-2 text-center">{project.status}</td>
+                <td className="border border-[#333] p-2 text-center">
+                  {project.twitter && (
+                    <a href={project.twitter} target="_blank" rel="noopener noreferrer" className="inline-block">
+                      <div className="w-5 h-5 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm">X</div>
+                    </a>
+                  )}
+                  {project.website && (
+                    <a href={project.website} target="_blank" rel="noopener noreferrer" className="inline-block ml-2">
+                      <div className="w-5 h-5 rounded-full bg-[#00BFFF] flex items-center justify-center text-white text-sm">🌐</div>
+                    </a>
+                  )}
+                </td>
+                <td className="border border-[#333] p-2 text-center">${project.cost}</td>
+                <td className="border border-[#333] p-2 text-center">
+                  <button onClick={() => handleEdit(index)} className="text-yellow-400 hover:text-yellow-500">Edit</button>
+                  <button onClick={() => handleDelete(index)} className="ml-2 text-red-500 hover:text-red-600">Delete</button>
                 </td>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            ))
+          )}
+        </tbody>
+      </table>
+
+      {/* Modal Form */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+          <div className="bg-[#2b2b2b] p-8 rounded-xl w-full max-w-lg text-white shadow-lg">
+            <h2 className="text-[#4A90E2] text-xl font-semibold text-center mb-4">
+              {editingProjectIndex !== null ? 'Edit Project' : 'Add New Project'}
+            </h2>
+            <form onSubmit={handleSubmit}>
+              <div className="flex gap-4">
+                <div className="flex-1">
+                  <input name="name" type="text" placeholder="Project Name" required value={formData.name} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <select name="type" required value={formData.type} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]">
+                    <option value="" disabled>Type</option>
+                    <option value="Testnet">Testnet</option>
+                    <option value="DePin">DePin</option>
+                    <option value="Point">Point</option>
+                    <option value="MiniApp">MiniApp</option>
+                    <option value="Wallet">Wallet</option>
+                  </select>
+                  <select name="chain" required value={formData.chain} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]">
+                    <option value="" disabled>Chain</option>
+                    <option value="Ethereum">Ethereum</option>
+                    <option value="Solana">Solana</option>
+                    <option value="BNB">BNB</option>
+                    <option value="Base">Base</option>
+                    <option value="Polygon">Polygon</option>
+                    <option value="OP">OP</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className="flex-1">
+                  <select name="status" required value={formData.status} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]">
+                    <option value="" disabled>Status</option>
+                    <option value="Waitlist">Waitlist</option>
+                    <option value="Early Access">Early Access</option>
+                    <option value="Active">Active</option>
+                    <option value="Snapshot">Snapshot</option>
+                    <option value="Claim">Claim</option>
+                    <option value="End">End</option>
+                  </select>
+                  <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange} min="0" className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <input name="website" type="text" placeholder="Website" value={formData.website} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                </div>
+              </div>
+              <div className="mt-6 text-center">
+                <button type="submit" disabled={loading} className="bg-[#4A90E2] text-white font-bold px-5 py-2 rounded-md mr-2">
+                  {loading ? 'Submitting...' : 'Submit'}
+                </button>
+                <button type="button" onClick={() => setShowModal(false)} className="bg-[#444] text-white font-bold px-5 py-2 rounded-md">
+                  Cancel
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
-}
+};
+
+export default Dashboard;
