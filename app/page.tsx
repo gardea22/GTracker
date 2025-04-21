@@ -162,18 +162,30 @@ const toggleCheck = (index: number) => {
               <tr key={index} className="bg-[#1e1e2f]">
                 <td className="border border-[#333] p-2 text-center">{project.name}</td>
                 <td className="border border-[#333] p-2 text-center">
-  <button
-    onClick={() => toggleCheck(index)}
-    className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
-    style={{
-      backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
-      color: 'white',
-    }}
-    title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
-  >
-    {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
-  </button>
+                 <td className="border border-[#333] p-2">
+                   
+  <div className="flex justify-center items-center">
+    <button
+      onClick={() => toggleCheck(index)}
+      className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
+      style={{
+        backgroundColor:
+          project.checkedUntil && project.checkedUntil > Date.now()
+            ? '#4A90E2'
+            : '#b91c1c',
+        color: 'white',
+      }}
+      title={
+        project.checkedUntil && project.checkedUntil > Date.now()
+          ? 'Checked (klik untuk reset)'
+          : 'Not checked (klik untuk centang)'
+      }
+    >
+      {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
+    </button>
+  </div>
 </td>
+
 
                 <td className="border border-[#333] p-2 text-center">{project.type}</td>
                 <td className="border border-[#333] p-2 text-center">{project.chain}</td>
