@@ -26,12 +26,29 @@ const Dashboard = () => {
     website: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setProjectList([...projectList, formData]);
-    setFormData({ name: '', type: '', chain: '', status: '', cost: 0, twitter: '', website: '' });
-    setShowModal(false);
-  };
+ const handleSubmit = (e: React.FormEvent) => {
+  e.preventDefault();
+
+  // Validasi Twitter & Website
+  if (!isValidUrl(formData.twitter) || !isValidUrl(formData.website)) {
+    alert("Twitter atau Website URL tidak valid (harus diawali http:// atau https://)");
+    return;
+  }
+
+  // Lanjut kalau valid
+  setProjectList([...projectList, formData]);
+  setFormData({
+    name: '',
+    type: '',
+    chain: '',
+    status: '',
+    cost: 0,
+    twitter: '',
+    website: '',
+  });
+  setShowModal(false);
+};
+
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
