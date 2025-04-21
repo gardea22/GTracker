@@ -240,10 +240,11 @@ const Dashboard = () => {
                 <td className="border border-[#333] p-2 text-center">{project.name}</td>
                 <td className="border border-[#333] p-2 text-center">
                   <input
-                    type="checkbox"
-                    checked={project.checkedUntil && project.checkedUntil > Date.now()}
-                    onChange={() => toggleCheck(index)}
-                  />
+  type="checkbox"
+  checked={!!(project.checkedUntil && project.checkedUntil > Date.now())}
+  onChange={() => toggleCheck(index)}
+/>
+
                 </td>
                 <td className="border border-[#333] p-2 text-center">{project.type}</td>
                 <td className="border border-[#333] p-2 text-center">{project.chain}</td>
