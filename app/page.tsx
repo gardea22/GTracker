@@ -230,7 +230,7 @@ const handleDelete = (index: number) => {
                           <option value="DePin">DePin</option>
                           <option value="Point">Point</option>
                           <option value="MiniApp">MiniApp</option>
-                          <option value="Wallet">Wallet</option>
+                          <option value="Wallet">tes</option>
                   </select>
 
                   <select
