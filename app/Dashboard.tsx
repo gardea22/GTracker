@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Project } from './Types';
+import { Project } from './types';
 import ProjectForm from './ProjectForm';
 import ProjectTable from './ProjectTable';
 
