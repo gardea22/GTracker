@@ -171,8 +171,12 @@ const handleDelete = (index: number) => {
         backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
         color: 'white',
       }}
-      title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
-    >
+      title={
+              project.checkedUntil && project.checkedUntil > Date.now()
+                ? `Checked ✔ (${Math.ceil((project.checkedUntil - Date.now()) / 3600000)} jam lagi)`
+                  : 'Not checked ✘ (klik untuk centang)'
+            }
+
       {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
     </button>
   </div>
