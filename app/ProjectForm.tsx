@@ -1,5 +1,5 @@
 import React from 'react';
-import { Project } from './ProjectForm';
+import { Project } from './Types';
 
 type ProjectFormProps = {
   formData: Project;
