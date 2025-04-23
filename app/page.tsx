@@ -1,91 +1,56 @@
 "use client";
 
-import { Card, CardContent } from "@/components/ui/card";
 import { useEffect, useState } from "react";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { Dashboard } from "@/components/dashboard";
+import { db } from "@/lib/db";
+import { useLiveQuery } from "dexie-react-hooks";
 
-interface Project {
-  id: number;
-  name: string;
-  website: string;
-  logoUrl?: string;
-}
+export default function Home() {
+  const projects = useLiveQuery(() => db.projects.toArray(), []);
 
-function extractDomain(url: string): string | null {
-  try {
-    const { hostname } = new URL(url);
-    return hostname;
-  } catch (e) {
-    return null;
-  }
-}
+  const [inputValue, setInputValue] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
 
-export default function Dashboard() {
-  const [projects, setProjects] = useState<Project[]>([]);
-  const [newProject, setNewProject] = useState({ name: "", website: "" });
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue) return;
 
-  const handleAddProject = () => {
-    if (!newProject.name || !newProject.website) return;
-    const id = Date.now();
-    setProjects([...projects, { id, ...newProject }]);
-    setNewProject({ name: "", website: "" });
-  };
+    setIsLoading(true);
+    const { hostname } = new URL(inputValue);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setNewProject({ ...newProject, [e.target.name]: e.target.value });
+    await db.projects.add({
+      name: hostname,
+      url: inputValue,
+      logo: `https://www.google.com/s2/favicons?sz=64&domain_url=${inputValue}`,
+      createdAt: new Date(),
+    });
+
+    setInputValue("");
+    setIsLoading(false);
   };
 
   return (
-    <main className="p-4">
-      <h1 className="text-2xl font-bold mb-4">GTracker Dashboard</h1>
-
-      <div className="flex gap-2 mb-6">
-        <Input
-          name="name"
-          placeholder="Project Name"
-          value={newProject.name}
-          onChange={handleInputChange}
-        />
-        <Input
-          name="website"
-          placeholder="Project Website"
-          value={newProject.website}
-          onChange={handleInputChange}
-        />
-        <Button onClick={handleAddProject}>Add Project</Button>
+    <main className="p-4 md:p-10 mx-auto max-w-7xl">
+      <div className="mb-4">
+        <form onSubmit={handleSubmit} className="flex items-center gap-2">
+          <input
+            type="url"
+            placeholder="https://example.com"
+            value={inputValue}
+            onChange={(e) => setInputValue(e.target.value)}
+            className="border rounded px-3 py-2 w-full"
+            required
+          />
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="bg-blue-500 text-white px-4 py-2 rounded disabled:opacity-50"
+          >
+            {isLoading ? "Adding..." : "Add"}
+          </button>
+        </form>
       </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-        {projects.map((project) => {
-          const domain = extractDomain(project.website);
-          const avatarSrc = project.logoUrl ||
-            (domain ? `https://unavatar.io/${domain}` : "/default-avatar.png");
-
-          return (
-            <Card key={project.id} className="rounded-2xl shadow-md">
-              <CardContent className="flex items-center space-x-4 p-4">
-                <img
-                  src={avatarSrc}
-                  alt={project.name}
-                  className="w-12 h-12 rounded-full object-cover"
-                />
-                <div>
-                  <p className="font-semibold text-lg">{project.name}</p>
-                  <a
-                    href={project.website}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-sm text-blue-600 hover:underline"
-                  >
-                    {project.website}
-                  </a>
-                </div>
-              </CardContent>
-            </Card>
-          );
-        })}
-      </div>
+      <Dashboard projects={projects || []} />
     </main>
   );
 }
