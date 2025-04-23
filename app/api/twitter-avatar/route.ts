@@ -27,7 +27,9 @@ export async function GET(req: Request) {
         'Cache-Control': 'public, max-age=86400', // cache 1 hari
       },
     });
-  } catch (error) {
-    return new NextResponse('Error fetching avatar', { status: 500 });
-  }
+} catch (error) {
+  console.error('Error fetching avatar:', error);
+  return new NextResponse('Error fetching avatar', { status: 500 });
+}
+
 }
