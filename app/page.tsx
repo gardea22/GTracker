@@ -12,6 +12,7 @@ type Project = {
   twitter: string | "";
   website: string | "";
   checkedUntil?: number; // waktu dalam timestamp
+  logoUrl?: string;
 };
 
 const Dashboard = () => {
