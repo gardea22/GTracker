@@ -40,7 +40,8 @@ const Dashboard = () => {
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type, checked } = e.target;
+    const target = e.target as HTMLInputElement;
+const { name, value, type, checked } = target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === "checkbox" ? checked : value,
