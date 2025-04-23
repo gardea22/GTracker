@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Tipe data untuk Project
 type Project = {
@@ -31,6 +31,24 @@ const Dashboard = () => {
     website: '',
   });
 
+  // Fungsi untuk memuat data proyek dari localStorage
+  const loadProjectsFromLocalStorage = () => {
+    const storedProjects = localStorage.getItem('projects');
+    if (storedProjects) {
+      setProjectList(JSON.parse(storedProjects));
+    }
+  };
+
+  // Fungsi untuk menyimpan data proyek ke localStorage
+  const saveProjectsToLocalStorage = (projects: Project[]) => {
+    localStorage.setItem('projects', JSON.stringify(projects));
+  };
+
+  // Memuat data proyek dari localStorage saat komponen pertama kali dimuat
+  useEffect(() => {
+    loadProjectsFromLocalStorage();
+  }, []);
+
   // Fungsi untuk meng-handle submit form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,9 +73,12 @@ const Dashboard = () => {
       const updatedProjectList = [...projectList];
       updatedProjectList[editingProjectIndex] = formData;
       setProjectList(updatedProjectList);
+      saveProjectsToLocalStorage(updatedProjectList); // Simpan ke localStorage setelah perubahan
     } else {
       // Add new project
-      setProjectList([...projectList, formData]);
+      const newProjectList = [...projectList, formData];
+      setProjectList(newProjectList);
+      saveProjectsToLocalStorage(newProjectList); // Simpan ke localStorage setelah penambahan
     }
 
     setFormData({
@@ -76,13 +97,12 @@ const Dashboard = () => {
 
   // Fungsi untuk menangani perubahan input form
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const { name, value } = e.target;
-  setFormData((prev) => ({
-    ...prev,
-    [name]: value,
-  }));
-};
-
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   // Fungsi untuk validasi URL
   const isValidUrl = (url: string) => {
@@ -96,31 +116,31 @@ const Dashboard = () => {
     setShowModal(true);
   };
 
-// Fungsi untuk menghapus proyek (dengan konfirmasi)
-const handleDelete = (index: number) => {
-  const confirmed = window.confirm("Apakah kamu yakin ingin menghapus proyek ini?");
-  if (!confirmed) return;
+  // Fungsi untuk menghapus proyek (dengan konfirmasi)
+  const handleDelete = (index: number) => {
+    const confirmed = window.confirm("Apakah kamu yakin ingin menghapus proyek ini?");
+    if (!confirmed) return;
 
-  const updatedProjectList = projectList.filter((_, i) => i !== index);
-  setProjectList(updatedProjectList);
-};
+    const updatedProjectList = projectList.filter((_, i) => i !== index);
+    setProjectList(updatedProjectList);
+    saveProjectsToLocalStorage(updatedProjectList); // Simpan ke localStorage setelah penghapusan
+  };
 
   const toggleCheck = (index: number) => {
-  const now = Date.now();
-  const updatedList = [...projectList];
+    const now = Date.now();
+    const updatedList = [...projectList];
 
-  const isCurrentlyChecked = updatedList[index].checkedUntil && updatedList[index].checkedUntil! > now;
+    const isCurrentlyChecked = updatedList[index].checkedUntil && updatedList[index].checkedUntil! > now;
 
-  if (isCurrentlyChecked) {
-    updatedList[index].checkedUntil = 0;
-  } else {
-    updatedList[index].checkedUntil = now + 24 * 60 * 60 * 1000; // 24 jam ke depan
-  }
+    if (isCurrentlyChecked) {
+      updatedList[index].checkedUntil = 0;
+    } else {
+      updatedList[index].checkedUntil = now + 24 * 60 * 60 * 1000; // 24 jam ke depan
+    }
 
-  setProjectList(updatedList);
-};
-
-
+    setProjectList(updatedList);
+    saveProjectsToLocalStorage(updatedList); // Simpan ke localStorage setelah perubahan
+  };
 
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
@@ -161,25 +181,21 @@ const handleDelete = (index: number) => {
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
                 <td className="border border-[#333] p-2 text-center">{project.name}</td>
-
-<td className="border border-[#333] p-2">
-  <div className="flex justify-center items-center">
-    <button
-      onClick={() => toggleCheck(index)}
-      className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
-      style={{
-        backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
-        color: 'white',
-      }}
-      title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
-    >
-      {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
-    </button>
-  </div>
-</td>
-
-
-                
+                <td className="border border-[#333] p-2">
+                  <div className="flex justify-center items-center">
+                    <button
+                      onClick={() => toggleCheck(index)}
+                      className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
+                      style={{
+                        backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
+                        color: 'white',
+                      }}
+                      title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
+                    >
+                      {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
+                    </button>
+                  </div>
+                </td>
                 <td className="border border-[#333] p-2 text-center">{project.type}</td>
                 <td className="border border-[#333] p-2 text-center">{project.chain}</td>
                 <td className="border border-[#333] p-2 text-center">{project.status}</td>
@@ -215,64 +231,81 @@ const handleDelete = (index: number) => {
             <form onSubmit={handleSubmit}>
               <div className="flex gap-4">
                 <div className="flex-1">
-
-                  
                   <input name="name" type="text" placeholder="Project Name" required value={formData.name} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                   <select
-                          name="type"
-                          required
-                          value={formData.type}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value }))}
-                          className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
-                          >
-                          <option value="" disabled>Type</option>
-                          <option value="Testnet">Testnet</option>
-                          <option value="DePin">DePin</option>
-                          <option value="Point">Point</option>
-                          <option value="MiniApp">MiniApp</option>
-                          <option value="Wallet">Wallet</option>
+                    name="type"
+                    required
+                    value={formData.type}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, type: e.target.value }))}
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  >
+                    <option value="" disabled>Type</option>
+                    <option value="Testnet">Testnet</option>
+                    <option value="DePin">DePin</option>
+                    <option value="Point">Point</option>
+                    <option value="MiniApp">MiniApp</option>
+                    <option value="Wallet">Wallet</option>
                   </select>
 
                   <select
-                          name="chain"
-                          required
-                          value={formData.chain}
-                          onChange={(e) => setFormData((prev) => ({ ...prev, chain: e.target.value }))}
-                          className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
-                          >
-                          <option value="" disabled>Chain</option>
-                          <option value="Ethereum">Ethereum</option>
-                          <option value="Solana">Solana</option>
-                          <option value="BNB">BNB</option>
-                          <option value="Base">Base</option>
-                          <option value="Polygon">Polygon</option>
-                          <option value="OP">OP</option>
-                          <option value="Other">Other</option>
+                    name="chain"
+                    required
+                    value={formData.chain}
+                    onChange={(e) => setFormData((prev) => ({ ...prev, chain: e.target.value }))}
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  >
+                    <option value="" disabled>Chain</option>
+                    <option value="Ethereum">Ethereum</option>
+                    <option value="Solana">Solana</option>
+                    <option value="BNB">BNB</option>
+                    <option value="Base">Base</option>
+                    <option value="Polygon">Polygon</option>
+                    <option value="OP">OP</option>
+                    <option value="Other">Other</option>
                   </select>
-
-                  
                 </div>
                 <div className="flex-1">
-
                   <select
-                        name="status"
-                        value={formData.status}
-                        onChange={handleChange}
-                        required
-                        className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
-                        >
-                        <option value="" disabled>Status</option>
-                        <option value="Waitlist">Waitlist</option>
-                        <option value="Early Access">Early Access</option>
-                        <option value="Active">Active</option>
-                        <option value="Snapshot">Snapshot</option>
-                        <option value="Claim">Claim</option>
-                        <option value="End">End</option>
-                </select>
-                  
-                  <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange} min="0" className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  <input name="website" type="text" placeholder="Website" value={formData.website} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                    name="status"
+                    value={formData.status}
+                    onChange={handleChange}
+                    required
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  >
+                    <option value="" disabled>Status</option>
+                    <option value="Waitlist">Waitlist</option>
+                    <option value="Early Access">Early Access</option>
+                    <option value="Active">Active</option>
+                    <option value="Snapshot">Snapshot</option>
+                    <option value="Claim">Claim</option>
+                    <option value="End">End</option>
+                  </select>
+                  <input
+                    name="cost"
+                    type="number"
+                    placeholder="Cost"
+                    required
+                    value={formData.cost}
+                    onChange={handleChange}
+                    min="0"
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  />
+                  <input
+                    name="twitter"
+                    type="text"
+                    placeholder="Twitter"
+                    value={formData.twitter}
+                    onChange={handleChange}
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  />
+                  <input
+                    name="website"
+                    type="text"
+                    placeholder="Website"
+                    value={formData.website}
+                    onChange={handleChange}
+                    className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+                  />
                 </div>
               </div>
               <div className="mt-6 text-center">
