@@ -144,15 +144,16 @@ const handleDelete = (index: number) => {
 
 const handleTwitterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const url = e.target.value;
-  const match = url.match(/(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)/);
+  const match = url.match(/twitter\.com\/([a-zA-Z0-9_]+)/);
   const username = match?.[1];
 
   setFormData((prev) => ({
     ...prev,
     twitter: url,
-    logoUrl: username ? `https://unavatar.io/twitter/${username}` : prev.logoUrl,
+    logoUrl: username ? `/api/twitter-avatar?username=${username}` : prev.logoUrl,
   }));
 };
+
 
 const [useTwitterAvatar, setUseTwitterAvatar] = useState(true);
 
@@ -201,15 +202,11 @@ const [useTwitterAvatar, setUseTwitterAvatar] = useState(true);
 				<td className="border border-[#333] p-2 text-center">
   <div className="flex items-center gap-3">
    
-      <img
-  src={project.logoUrl}
-  onError={(e) => {
-    (e.target as HTMLImageElement).src = "/fallback-avatar.png";
-  }}
-  alt="Avatar"
-  className="w-8 h-8 rounded-full"
+<img
+  src={`/api/twitter-avatar?username=${username}`}
+  alt="Twitter Avatar"
+  className="w-10 h-10 rounded-full"
 />
-
 
     <h2 className="text-lg font-semibold">{project.name}</h2>
   </div>
