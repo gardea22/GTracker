@@ -122,6 +122,42 @@ const handleDelete = (index: number) => {
 
 
 
+	const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+
+  const formDataUpload = new FormData();
+  formDataUpload.append("file", file);
+  formDataUpload.append("upload_preset", "gtracker_upload"); // ganti sesuai preset Cloudinary kamu
+
+  const res = await fetch("https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload", {
+    method: "POST",
+    body: formDataUpload,
+  });
+
+  const data = await res.json();
+  setFormData((prev) => ({ ...prev, logoUrl: data.secure_url }));
+  
+};
+
+
+const handleTwitterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const url = e.target.value;
+  const match = url.match(/twitter\.com\/([a-zA-Z0-9_]+)/);
+  const username = match?.[1];
+
+  setFormData((prev) => ({
+    ...prev,
+    twitter: url,
+    logoUrl: username ? `https://unavatar.io/twitter/${username}` : prev.logoUrl,
+  }));
+};
+
+const [useTwitterAvatar, setUseTwitterAvatar] = useState(true);
+
+
+
+
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
       <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
@@ -232,6 +268,14 @@ const handleDelete = (index: number) => {
                           <option value="MiniApp">MiniApp</option>
                           <option value="Wallet">Wallet</option>
                   </select>
+				  
+				  <input
+						type="file"
+						accept="image/*"
+						onChange={handleFileUpload}
+						className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm"
+					/>
+
 
                   <select
                           name="chain"
@@ -271,7 +315,18 @@ const handleDelete = (index: number) => {
                 </select>
                   
                   <input name="cost" type="number" placeholder="Cost" required value={formData.cost} onChange={handleChange} min="0" className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
-                  <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+                  <input name="twitter" type="text" placeholder="Twitter" value={formData.twitter} onChange={handleTwitterChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
+				  
+				  <label className="flex items-center gap-2 text-sm mt-3">
+					<input
+						type="checkbox"
+						checked={useTwitterAvatar}
+						onChange={() => setUseTwitterAvatar(!useTwitterAvatar)}
+					/>
+					Gunakan gambar dari Twitter?
+				</label>
+
+				  
                   <input name="website" type="text" placeholder="Website" value={formData.website} onChange={handleChange} className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]" />
                 </div>
               </div>
