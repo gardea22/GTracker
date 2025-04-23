@@ -200,11 +200,17 @@ const [useTwitterAvatar, setUseTwitterAvatar] = useState(true);
                 
 				<td className="border border-[#333] p-2 text-center">
   <div className="flex items-center gap-3">
-    <img
-      src={project.logoUrl || "/default-avatar.png"}
-      alt="Logo"
-      className="w-8 h-8 rounded-full object-cover"
-    />
+   
+      <img
+  src={project.logoUrl}
+  onError={(e) => {
+    (e.target as HTMLImageElement).src = "/fallback-avatar.png";
+  }}
+  alt="Avatar"
+  className="w-8 h-8 rounded-full"
+/>
+
+
     <h2 className="text-lg font-semibold">{project.name}</h2>
   </div>
 </td>
