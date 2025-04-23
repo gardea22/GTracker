@@ -144,7 +144,7 @@ const handleDelete = (index: number) => {
 
 const handleTwitterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
   const url = e.target.value;
-  const match = url.match(/twitter\.com\/([a-zA-Z0-9_]+)/);
+  const match = url.match(/(?:twitter\.com|x\.com)\/([a-zA-Z0-9_]+)/);
   const username = match?.[1];
 
   setFormData((prev) => ({
