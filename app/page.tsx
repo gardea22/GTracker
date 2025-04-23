@@ -197,7 +197,18 @@ const [useTwitterAvatar, setUseTwitterAvatar] = useState(true);
           ) : (
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
-                <td className="border border-[#333] p-2 text-center">{project.name}</td>
+                
+				<td className="border border-[#333] p-2 text-center">
+  <div className="flex items-center gap-3">
+    <img
+      src={project.logoUrl || "/default-avatar.png"}
+      alt="Logo"
+      className="w-8 h-8 rounded-full object-cover"
+    />
+    <h2 className="text-lg font-semibold">{project.name}</h2>
+  </div>
+</td>
+
 
 <td className="border border-[#333] p-2">
   <div className="flex justify-center items-center">
