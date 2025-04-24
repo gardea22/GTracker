@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import Image from "next/image";
 
 // Tipe data untuk Project
 type Project = {
@@ -12,7 +11,6 @@ type Project = {
   cost: number;
   twitter: string | "";
   website: string | "";
-  logo?: string; // <-- Tambahan ini
   checkedUntil?: number; // waktu dalam timestamp
 };
 
@@ -21,29 +19,6 @@ const Dashboard = () => {
   const [projectList, setProjectList] = useState<Project[]>([]); // Daftar proyek yang ditambahkan
   const [loading, setLoading] = useState(false); // Menyimpan status apakah data sedang diproses
   const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(null); // Menyimpan indeks proyek yang sedang diedit
-
-const [linkWebsite, setLinkWebsite] = useState("");
-const [logoUrl, setLogoUrl] = useState("");
-
-const newProject = {
-  name,
-  linkWebsite,
-  logoUrl,
-  // dll...
-};
-
-
-useEffect(() => {
-  if (linkWebsite) {
-    try {
-      const domain = new URL(linkWebsite).origin;
-      setLogoUrl(`${domain}/favicon.ico`);
-    } catch (err) {
-      setLogoUrl("");
-    }
-  }
-}, [linkWebsite]);
-
 
   // State untuk menyimpan data inputan form
   const [formData, setFormData] = useState<Project>({
@@ -205,19 +180,7 @@ useEffect(() => {
           ) : (
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
-                <td className="flex items-center">
-  {project.logoUrl && (
-    <Image
-      src={project.logoUrl}
-      alt={`${project.name} Logo`}
-      width={24}
-      height={24}
-      className="rounded-full mr-2"
-    />
-  )}
-  {project.name}
-</td>
-
+                <td className="border border-[#333] p-2 text-center">{project.name}</td>
                 <td className="border border-[#333] p-2">
                   <div className="flex justify-center items-center">
                     <button
@@ -283,55 +246,6 @@ useEffect(() => {
                     <option value="MiniApp">MiniApp</option>
                     <option value="Wallet">Wallet</option>
                   </select>
-				  
-				{logoUrl && (
-  <Image
-    src={logoUrl}
-    alt="Project Logo"
-    width={32}
-    height={32}
-    className="rounded-full mt-2"
-    onError={(e) => {
-      e.currentTarget.src = "/default-logo.png";
-    }}
-  />
-)}  
-				  
-				  
-				  
-				  
-				  {/* Upload Logo */}
-<input 
-  type="file" 
-  accept="image/*" 
-  onChange={(e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setFormData((prev) => ({ ...prev, logo: reader.result as string }));
-    };
-    reader.readAsDataURL(file);
-  }}
-  className="w-full mt-3 text-sm text-white"
-/>
-
-
-<button
-  type="button"
-  className="bg-[#555] text-white text-xs px-2 py-1 mt-2 rounded-md"
-  onClick={() => {
-    if (formData.website) {
-      const url = new URL(formData.website);
-      setFormData((prev) => ({ ...prev, logo: `https://www.google.com/s2/favicons?sz=64&domain_url=${url.origin}` }));
-    } else {
-      alert("Masukkan alamat website terlebih dahulu!");
-    }
-  }}
->
-  Gunakan favicon dari Website
-</button>
 
                   <select
                     name="chain"
