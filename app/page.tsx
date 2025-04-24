@@ -11,6 +11,7 @@ type Project = {
   cost: number;
   twitter: string | "";
   website: string | "";
+  logo?: string; // <-- Tambahan ini
   checkedUntil?: number; // waktu dalam timestamp
 };
 
@@ -180,7 +181,12 @@ const Dashboard = () => {
           ) : (
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
-                <td className="border border-[#333] p-2 text-center">{project.name}</td>
+                <td className="border border-[#333] p-2 flex items-center gap-2">
+  {project.logo && (
+    <img src={project.logo} alt="logo" className="w-5 h-5 rounded-full" />
+  )}
+  {project.name}
+</td>
                 <td className="border border-[#333] p-2">
                   <div className="flex justify-center items-center">
                     <button
@@ -246,6 +252,38 @@ const Dashboard = () => {
                     <option value="MiniApp">MiniApp</option>
                     <option value="Wallet">Wallet</option>
                   </select>
+				  {/* Upload Logo */}
+<input 
+  type="file" 
+  accept="image/*" 
+  onChange={(e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setFormData((prev) => ({ ...prev, logo: reader.result as string }));
+    };
+    reader.readAsDataURL(file);
+  }}
+  className="w-full mt-3 text-sm text-white"
+/>
+
+/* Atau pakai favicon dari website */
+<button
+  type="button"
+  className="bg-[#555] text-white text-xs px-2 py-1 mt-2 rounded-md"
+  onClick={() => {
+    if (formData.website) {
+      const url = new URL(formData.website);
+      setFormData((prev) => ({ ...prev, logo: `https://www.google.com/s2/favicons?sz=64&domain_url=${url.origin}` }));
+    } else {
+      alert("Masukkan alamat website terlebih dahulu!");
+    }
+  }}
+>
+  Gunakan favicon dari Website
+</button>
 
                   <select
                     name="chain"
