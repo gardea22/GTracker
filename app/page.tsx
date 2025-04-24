@@ -190,8 +190,8 @@ const getTimeRemaining = (timestamp?: number) => {
   ).padStart(2, '0')}`;
 };
 
-// 👇 Tambahkan ini supaya JSX punya rumah!
-export default function Page() {
+
+
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
       <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
@@ -223,7 +223,6 @@ export default function Page() {
       </table>
     </div>
   );
-}
 
 		
 		
