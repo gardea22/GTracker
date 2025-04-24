@@ -183,7 +183,7 @@ const Dashboard = () => {
               <tr key={index} className="bg-[#1e1e2f]">
                 <td className="border border-[#333] p-2 flex items-center gap-2">
   {project.logo && (
-    <img src={project.logo} alt="logo" className="w-5 h-5 rounded-full" />
+    <Image src={project.logo} alt="logo" className="w-5 h-5 rounded-full" />
   )}
   {project.name}
 </td>
@@ -269,7 +269,7 @@ const Dashboard = () => {
   className="w-full mt-3 text-sm text-white"
 />
 
-/* Atau pakai favicon dari website */
+
 <button
   type="button"
   className="bg-[#555] text-white text-xs px-2 py-1 mt-2 rounded-md"
