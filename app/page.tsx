@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 // Tipe data untuk Project
 type Project = {
@@ -31,8 +31,8 @@ const Dashboard = () => {
     cost: 0,
     twitter: '',
     website: '',
-	logo: '',
     autoLogo: true, // default-nya aktif otomatis
+	logo: '', // default aman
 
   });
 
@@ -49,15 +49,58 @@ const Dashboard = () => {
     localStorage.setItem('projects', JSON.stringify(projects));
   };
 
-  // Memuat data proyek dari localStorage saat komponen pertama kali dimuat
-  useEffect(() => {
-    loadProjectsFromLocalStorage();
-  }, []);
 
-  // Fungsi untuk meng-handle submit form
+	 
+const [tick, setTick] = useState(0);
+
+useEffect(() => {
+	loadProjectsFromLocalStorage();
+	
+  const interval = setInterval(() => {
+    setTick((t) => t + 1); // trigger re-render tanpa ubah projectList
+  }, 1000);
+  
+  return () => clearInterval(interval);
+}, []);
+
+
+ const resetForm = () => {
+  setFormData({
+    name: '',
+    type: '',
+    chain: '',
+    status: '',
+    cost: 0,
+    twitter: '',
+    website: '',
+    autoLogo: true,
+    logo: ''
+  });
+  setEditingProjectIndex(null);
+  setShowModal(false);
+  setLoading(false);
+};
+
+
+const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { name, value, type, checked } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: type === 'checkbox' ? checked : value,
+  }));
+};
+
+ // Fungsi untuk validasi URL
+  const isValidUrl = (url: string) => {
+    return url === "" || /^https?:\/\/.+$/.test(url);
+  };
+  
+  
+  	// Fungsi untuk meng-handle submit form
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+
 
     // Validasi URL Twitter dan Website
     if (!isValidUrl(formData.twitter) || !isValidUrl(formData.website)) {
@@ -85,32 +128,9 @@ const Dashboard = () => {
       setProjectList(newProjectList);
       saveProjectsToLocalStorage(newProjectList); // Simpan ke localStorage setelah penambahan
     }
-
-    setFormData({
-      name: '',
-      type: '',
-      chain: '',
-      status: '',
-      cost: 0,
-      twitter: '',
-      website: '',
-    });
-    setShowModal(false);
-    setEditingProjectIndex(null); // Reset editing state
-    setLoading(false);
-  };
-
- const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-  const { name, value, type, checked } = e.target;
-  setFormData((prev) => ({
-    ...prev,
-    [name]: type === 'checkbox' ? checked : value,
-  }));
-};
-
-  // Fungsi untuk validasi URL
-  const isValidUrl = (url: string) => {
-    return url === "" || /^https?:\/\/.+$/.test(url);
+	
+	resetForm();
+	
   };
 
   // Fungsi untuk mengedit proyek
@@ -131,31 +151,47 @@ const Dashboard = () => {
   };
 
   const toggleCheck = (index: number) => {
-    const now = Date.now();
-    const updatedList = [...projectList];
+  const updated = [...projectList];
+  const now = Date.now();
+  const project = updated[index];
 
-    const isCurrentlyChecked = updatedList[index].checkedUntil && updatedList[index].checkedUntil! > now;
+  if (!project.checkedUntil || now > project.checkedUntil) {
+    // aktifkan check 24 jam
+    project.checkedUntil = now + 24 * 60 * 60 * 1000;
+  } else {
+    // jika sudah check dan diklik lagi, reset jadi belum check
+    project.checkedUntil = undefined;
+  }
 
-    if (isCurrentlyChecked) {
-      updatedList[index].checkedUntil = 0;
-    } else {
-      updatedList[index].checkedUntil = now + 24 * 60 * 60 * 1000; // 24 jam ke depan
-    }
-
-    setProjectList(updatedList);
-    saveProjectsToLocalStorage(updatedList); // Simpan ke localStorage setelah perubahan
-  };
+  setProjectList(updated);
+  localStorage.setItem('projects', JSON.stringify(updated));
+};
   
-  const getFaviconFromUrl = (url: string): string => {
+const getFaviconFromUrl = useCallback((url: string) => {
   try {
     const domain = new URL(url).origin;
     return `${domain}/favicon.ico`;
   } catch {
     return '';
   }
-};
+}, []);
 
-  
+const getTimeRemaining = (timestamp?: number) => {
+  if (!timestamp) return '';
+  const diff = timestamp - Date.now();
+  if (diff <= 0) return '';
+
+  const hours = Math.floor(diff / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+  return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(
+    seconds
+  ).padStart(2, '0')}`;
+};
+			
+
+
 
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
@@ -185,73 +221,96 @@ const Dashboard = () => {
             <th className="border border-[#333] p-2 font-bold">Actions</th>
           </tr>
         </thead>
+		
+		
+		
         <tbody>
-          {projectList.length === 0 ? (
+		  {projectList.length === 0 ? (
             <tr>
               <td colSpan={8} className="border border-[#333] p-2 text-center bg-[#1e1e2f]">
                 No projects available
               </td>
             </tr>
           ) : (
-            projectList.map((project, index) => (
-              <tr key={index} className="bg-[#1e1e2f]">
-                
-				<td className="border border-[#333] p-2 flex items-center gap-2">
-					{project.website && (
-						<img
-							src={
-							project.autoLogo
-							? getFaviconFromUrl(project.website)
-							: project.logo || ''
-								}
-										alt={`${project.name} logo`}
-										className="w-6 h-6 rounded-full object-contain"
-										onError={(e) => (e.currentTarget.style.display = 'none')}
-						/>
-							)}
-							<span>{project.name}</span>
-				</td>
-				
-				
-                <td className="border border-[#333] p-2">
-                  <div className="flex justify-center items-center">
-                    <button
-                      onClick={() => toggleCheck(index)}
-                      className="w-6 h-6 rounded-full flex items-center justify-center text-sm font-bold transition-colors"
-                      style={{
-                        backgroundColor: project.checkedUntil && project.checkedUntil > Date.now() ? '#4A90E2' : '#b91c1c',
-                        color: 'white',
-                      }}
-                      title={project.checkedUntil && project.checkedUntil > Date.now() ? 'Checked (klik untuk reset)' : 'Not checked (klik untuk centang)'}
-                    >
-                      {project.checkedUntil && project.checkedUntil > Date.now() ? '✔' : '✘'}
-                    </button>
-                  </div>
-                </td>
-                <td className="border border-[#333] p-2 text-center">{project.type}</td>
-                <td className="border border-[#333] p-2 text-center">{project.chain}</td>
-                <td className="border border-[#333] p-2 text-center">{project.status}</td>
-                <td className="border border-[#333] p-2 text-center">
-                  {project.twitter && (
-                    <a href={project.twitter} target="_blank" rel="noopener noreferrer" className="inline-block">
-                      <div className="w-5 h-5 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm">X</div>
-                    </a>
-                  )}
-                  {project.website && (
-                    <a href={project.website} target="_blank" rel="noopener noreferrer" className="inline-block ml-2">
-                      <div className="w-5 h-5 rounded-full bg-[#00BFFF] flex items-center justify-center text-white text-sm">🌐</div>
-                    </a>
-                  )}
-                </td>
-                <td className="border border-[#333] p-2 text-center">${project.cost}</td>
-                <td className="border border-[#333] p-2 text-center">
-                  {/* Tombol Edit dan Delete */}
-                  <button onClick={() => handleEdit(index)} className="text-yellow-400 hover:text-yellow-500">Edit</button>
-                  <button onClick={() => handleDelete(index)} className="ml-2 text-red-500 hover:text-red-600">Delete</button>
-                </td>
-              </tr>
-            ))
+		  
+		  
+{projectList.map((project, index) => {
+	
+  const isChecked = project.checkedUntil && Date.now() < project.checkedUntil;
+  const timeLeft = getTimeRemaining(project.checkedUntil);
+
+  return (
+    <tr key={index} className="bg-[#1e1e2f]">
+      {/* Nama + Logo */}
+      <td className="border border-[#333] p-2">
+        <div className="flex items-center gap-2">
+          {project.website && (
+            <img
+              src={project.autoLogo ? getFaviconFromUrl(project.website) : project.logo || '/default-avatar.png'}
+              alt={`${project.name} logo`}
+              className="w-6 h-6 rounded-full object-contain"
+              onError={(e) => (e.currentTarget.src = '/default-avatar.png')}
+            />
           )}
+          <span>{project.name}</span>
+        </div>
+      </td>
+
+      {/* Check 24 jam */}
+      <td className="border border-[#333] p-2">
+        <div className="flex justify-center items-center gap-2">
+          <button
+            onClick={() => toggleCheck(index)}
+            title="Toggle Check 24h"
+            className={`text-lg ${isChecked ? 'text-green-400' : 'text-red-400'}`}
+          >
+            {isChecked ? '✅' : '❌'}
+          </button>
+          {isChecked && <span className="text-sm text-gray-400">{timeLeft}</span>}
+        </div>
+      </td>
+
+      {/* Info dasar */}
+      <td className="border border-[#333] p-2 text-center">{project.type}</td>
+      <td className="border border-[#333] p-2 text-center">{project.chain}</td>
+      <td className="border border-[#333] p-2 text-center">{project.status}</td>
+
+      {/* Link sosial */}
+      <td className="border border-[#333] p-2 text-center">
+        {project.twitter && (
+          <a href={project.twitter} target="_blank" rel="noopener noreferrer" title="Twitter">
+            <div className="w-5 h-5 rounded-full bg-[#1DA1F2] flex items-center justify-center text-white text-sm">X</div>
+          </a>
+        )}
+        {project.website && (
+          <a href={project.website} target="_blank" rel="noopener noreferrer" className="ml-2" title="Website">
+            <div className="w-5 h-5 rounded-full bg-[#00BFFF] flex items-center justify-center text-white text-sm">🌐</div>
+          </a>
+        )}
+      </td>
+
+      {/* Cost */}
+      <td className="border border-[#333] p-2 text-center">${project.cost}</td>
+
+      {/* Action Button */}
+      <td className="border border-[#333] p-2 text-center space-x-2">
+        <button
+          onClick={() => handleEdit(index)}
+          className="text-yellow-400 hover:text-yellow-300 transition-colors"
+        >
+          Edit
+        </button>
+        <button
+          onClick={() => handleDelete(index)}
+          className="text-red-500 hover:text-red-400 transition-colors"
+        >
+          Delete
+        </button>
+      </td>
+    </tr>
+  );
+})}
+
         </tbody>
       </table>
 
@@ -367,9 +426,9 @@ const Dashboard = () => {
                 <button type="submit" disabled={loading} className="bg-[#4A90E2] text-white font-bold px-5 py-2 rounded-md mr-2">
                   {loading ? 'Submitting...' : 'Submit'}
                 </button>
-                <button type="button" onClick={() => setShowModal(false)} className="bg-[#444] text-white font-bold px-5 py-2 rounded-md">
-                  Cancel
-                </button>
+	  <button type="button" onClick={() => { setShowModal(false); resetForm(); }} className="bg-[#444] text-white font-bold px-5 py-2 rounded-md">
+  Cancel
+</button>
               </div>
             </form>
           </div>
