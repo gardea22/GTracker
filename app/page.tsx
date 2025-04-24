@@ -22,6 +22,29 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false); // Menyimpan status apakah data sedang diproses
   const [editingProjectIndex, setEditingProjectIndex] = useState<number | null>(null); // Menyimpan indeks proyek yang sedang diedit
 
+const [linkWebsite, setLinkWebsite] = useState("");
+const [logoUrl, setLogoUrl] = useState("");
+
+const newProject = {
+  name,
+  linkWebsite,
+  logoUrl,
+  // dll...
+};
+
+
+useEffect(() => {
+  if (linkWebsite) {
+    try {
+      const domain = new URL(linkWebsite).origin;
+      setLogoUrl(`${domain}/favicon.ico`);
+    } catch (err) {
+      setLogoUrl("");
+    }
+  }
+}, [linkWebsite]);
+
+
   // State untuk menyimpan data inputan form
   const [formData, setFormData] = useState<Project>({
     name: '',
@@ -182,12 +205,19 @@ const Dashboard = () => {
           ) : (
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
-                <td className="border border-[#333] p-2 flex items-center gap-2">
-  {project.logo && (
-    <Image src={project.logo} alt="logo" className="w-5 h-5 rounded-full" />
+                <td className="flex items-center">
+  {project.logoUrl && (
+    <Image
+      src={project.logoUrl}
+      alt={`${project.name} Logo`}
+      width={24}
+      height={24}
+      className="rounded-full mr-2"
+    />
   )}
   {project.name}
 </td>
+
                 <td className="border border-[#333] p-2">
                   <div className="flex justify-center items-center">
                     <button
@@ -253,6 +283,23 @@ const Dashboard = () => {
                     <option value="MiniApp">MiniApp</option>
                     <option value="Wallet">Wallet</option>
                   </select>
+				  
+				{logoUrl && (
+  <Image
+    src={logoUrl}
+    alt="Project Logo"
+    width={32}
+    height={32}
+    className="rounded-full mt-2"
+    onError={(e) => {
+      e.currentTarget.src = "/default-logo.png";
+    }}
+  />
+)}  
+				  
+				  
+				  
+				  
 				  {/* Upload Logo */}
 <input 
   type="file" 
