@@ -11,6 +11,8 @@ type Project = {
   cost: number;
   twitter: string | "";
   website: string | "";
+  logo?: string;
+  autoLogo?: boolean;
   checkedUntil?: number; // waktu dalam timestamp
 };
 
@@ -29,6 +31,9 @@ const Dashboard = () => {
     cost: 0,
     twitter: '',
     website: '',
+	logo: '',
+    autoLogo: true, // default-nya aktif otomatis
+
   });
 
   // Fungsi untuk memuat data proyek dari localStorage
@@ -95,14 +100,13 @@ const Dashboard = () => {
     setLoading(false);
   };
 
-  // Fungsi untuk menangani perubahan input form
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+ const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const { name, value, type, checked } = e.target;
+  setFormData((prev) => ({
+    ...prev,
+    [name]: type === 'checkbox' ? checked : value,
+  }));
+};
 
   // Fungsi untuk validasi URL
   const isValidUrl = (url: string) => {
@@ -195,11 +199,15 @@ const Dashboard = () => {
 				<td className="border border-[#333] p-2 flex items-center gap-2">
 					{project.website && (
 						<img
-								src={getFaviconFromUrl(project.website)}
-								alt={`${project.name} logo`}
-								className="w-6 h-6 rounded-full object-contain"
-								onError={(e) => (e.currentTarget.style.display = 'none')}
-							/>
+							src={
+							project.autoLogo
+							? getFaviconFromUrl(project.website)
+							: project.logo || ''
+								}
+										alt={`${project.name} logo`}
+										className="w-6 h-6 rounded-full object-contain"
+										onError={(e) => (e.currentTarget.style.display = 'none')}
+						/>
 							)}
 							<span>{project.name}</span>
 				</td>
@@ -330,6 +338,29 @@ const Dashboard = () => {
                     onChange={handleChange}
                     className="w-full p-3 mt-3 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
                   />
+				  
+				  
+				<div className="mt-3 flex items-center gap-2">
+				<input
+					type="checkbox"
+					checked={formData.autoLogo}
+					onChange={(e) => setFormData((prev) => ({ ...prev, autoLogo: e.target.checked }))}
+				/>
+				<label className="text-sm">Ambil logo otomatis dari website</label>
+				</div>
+				{!formData.autoLogo && (
+				<input
+					type="text"
+					name="logo"
+					placeholder="Logo URL (https://...)"
+					value={formData.logo}
+					onChange={handleChange}
+					className="w-full p-3 mt-2 rounded-md bg-[#3b3b3b] text-white text-sm outline-none shadow-inner shadow-[#555]"
+				/>
+				)}
+
+				  
+				  
                 </div>
               </div>
               <div className="mt-6 text-center">
