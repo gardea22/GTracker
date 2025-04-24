@@ -189,10 +189,9 @@ const getTimeRemaining = (timestamp?: number) => {
     seconds
   ).padStart(2, '0')}`;
 };
-			
 
-
-
+// 👇 Tambahkan ini supaya JSX punya rumah!
+export default function Dashboard() {
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
       <h1 className="text-center text-[#4A90E2] text-2xl font-bold">GTracker</h1>
@@ -221,6 +220,11 @@ const getTimeRemaining = (timestamp?: number) => {
             <th className="border border-[#333] p-2 font-bold">Actions</th>
           </tr>
         </thead>
+      </table>
+    </div>
+  );
+}
+
 		
 		
 		
