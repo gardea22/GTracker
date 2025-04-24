@@ -126,6 +126,7 @@ const Dashboard = () => {
     saveProjectsToLocalStorage(updatedProjectList); // Simpan ke localStorage setelah penghapusan
   };
 
+  // Fungsi untuk toggle status check
   const toggleCheck = (index: number) => {
     const now = Date.now();
     const updatedList = [...projectList];
@@ -141,17 +142,16 @@ const Dashboard = () => {
     setProjectList(updatedList);
     saveProjectsToLocalStorage(updatedList); // Simpan ke localStorage setelah perubahan
   };
-  
-  const getFaviconFromUrl = (url: string): string => {
-  try {
-    const domain = new URL(url).origin;
-    return `${domain}/favicon.ico`;
-  } catch {
-    return '';
-  }
-};
 
-  
+  // Fungsi untuk mengambil favicon dari URL
+  const getFaviconFromUrl = (url: string): string => {
+    try {
+      const domain = new URL(url).origin;
+      return `${domain}/favicon.ico`;
+    } catch {
+      return '';
+    }
+  };
 
   return (
     <div className="font-sans p-4 bg-[#1e1e2f] min-h-screen text-white">
@@ -191,20 +191,17 @@ const Dashboard = () => {
           ) : (
             projectList.map((project, index) => (
               <tr key={index} className="bg-[#1e1e2f]">
-                
-				<td className="border border-[#333] p-2 flex items-center gap-2">
-					{project.website && (
-						<img
-								src={getFaviconFromUrl(project.website)}
-								alt={`${project.name} logo`}
-								className="w-6 h-6 rounded-full object-contain"
-								onError={(e) => (e.currentTarget.style.display = 'none')}
-							/>
-							)}
-							<span>{project.name}</span>
-				</td>
-				
-				
+                <td className="border border-[#333] p-2 flex items-center gap-2">
+                  {project.website && (
+                    <img
+                      src={getFaviconFromUrl(project.website)}
+                      alt={`${project.name} logo`}
+                      className="w-6 h-6 rounded-full object-contain"
+                      onError={(e) => (e.currentTarget.style.display = 'none')}
+                    />
+                  )}
+                  <span>{project.name}</span>
+                </td>
                 <td className="border border-[#333] p-2">
                   <div className="flex justify-center items-center">
                     <button
@@ -270,7 +267,6 @@ const Dashboard = () => {
                     <option value="MiniApp">MiniApp</option>
                     <option value="Wallet">Wallet</option>
                   </select>
-
                   <select
                     name="chain"
                     required
@@ -332,11 +328,19 @@ const Dashboard = () => {
                   />
                 </div>
               </div>
-              <div className="mt-6 text-center">
-                <button type="submit" disabled={loading} className="bg-[#4A90E2] text-white font-bold px-5 py-2 rounded-md mr-2">
-                  {loading ? 'Submitting...' : 'Submit'}
+              <div className="flex gap-4 justify-center mt-6">
+                <button
+                  type="submit"
+                  className="bg-[#4A90E2] text-white py-2 px-4 rounded-md w-full text-lg"
+                  disabled={loading}
+                >
+                  {loading ? "Processing..." : "Save Project"}
                 </button>
-                <button type="button" onClick={() => setShowModal(false)} className="bg-[#444] text-white font-bold px-5 py-2 rounded-md">
+                <button
+                  type="button"
+                  onClick={() => setShowModal(false)}
+                  className="bg-[#e24c4c] text-white py-2 px-4 rounded-md w-full text-lg"
+                >
                   Cancel
                 </button>
               </div>
